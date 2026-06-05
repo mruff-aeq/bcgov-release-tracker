@@ -41,7 +41,7 @@ To get a full report, simply run your wrapper script in the terminal:
 # This will output deployment tables, PRs pending release, and current versions
 ./release-output-script.sh
 ```
-If you want to use the core tool manually on a specific repository to see the last 6 runs and unreleased PRs, use:
+If you want to use the core tool manually on a specific repository to see the last 2 runs and unreleased PRs, use:
 
 ```bash
 ./release-watch.sh 2 cd.yml bcgov/business-filings-ui test-release
