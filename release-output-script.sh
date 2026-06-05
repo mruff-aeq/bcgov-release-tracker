@@ -23,6 +23,8 @@ echo "bcgov/business-ui - checking web/business-registry-dashboard"
 echo ""
 ~/Desktop/release-watch.sh 2 business-registry-ui-cd.yaml bcgov/business-ui test-release --in-dirs=web/business-registry-dashboard
 
+echo "Repo Versions:"
+echo ""
 echo "business-edit-ui:       $(curl -fsSL https://raw.githubusercontent.com/bcgov/business-edit-ui/main/package.json      | jq -r .version)"
 echo "business-filings-ui:    $(curl -fsSL https://raw.githubusercontent.com/bcgov/business-filings-ui/main/package.json   | jq -r .version)"
 echo "business-create-ui:     $(curl -fsSL https://raw.githubusercontent.com/bcgov/business-create-ui/main/package.json    | jq -r .version)"
