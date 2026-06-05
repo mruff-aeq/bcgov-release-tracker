@@ -176,7 +176,8 @@ chore: update versions                     @app/github-actions  #480    NA      
   <tr><td>chore: update versions</td><td>@app/github-actions</td><td>#480</td><td>NA</td><td>2026-05-27</td><td>60cb2e3</td><td>NA</td></tr>
 </table>
 
-Repo Versions:  
+Repo Versions:
+
 business-edit-ui:       4.17.11
 business-filings-ui:    8.3.13
 business-create-ui:     5.18.14
