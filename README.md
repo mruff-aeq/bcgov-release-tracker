@@ -44,6 +44,5 @@ To get a full report, simply run your wrapper script in the terminal:
 If you want to use the core tool manually on a specific repository to see the last 6 runs and unreleased PRs, use:
 
 ```bash
-~/Desktop/release-watch.sh 2 cd.yml bcgov/business-filings-ui test-release
-
+./release-watch.sh 2 cd.yml bcgov/business-filings-ui test-release
 ```
