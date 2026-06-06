@@ -1,27 +1,27 @@
 echo ""
 echo "bcgov/lear"
 echo ""
-~/Desktop/release-watch.sh 2 business-bn-cd.yml bcgov/lear test-release
+./release-watch.sh 2 business-bn-cd.yml bcgov/lear test-release
 echo ""
 echo "bcgov/business-filings-ui"
 echo ""
-~/Desktop/release-watch.sh 2 cd.yml bcgov/business-filings-ui test-release
+./release-watch.sh 2 cd.yml bcgov/business-filings-ui test-release
 echo ""
 echo "bcgov/business-create-ui"
 echo ""
-~/Desktop/release-watch.sh 2 cd.yml bcgov/business-create-ui test-release
+./release-watch.sh 2 cd.yml bcgov/business-create-ui test-release
 echo ""
 echo "bcgov/business-edit-ui"
 echo ""
-~/Desktop/release-watch.sh 2 cd.yml bcgov/business-edit-ui test-release
+./release-watch.sh 2 cd.yml bcgov/business-edit-ui test-release
 echo ""
 echo "bcgov/business-dashboard-ui"
 echo ""
-~/Desktop/release-watch.sh 2 cd.yml bcgov/business-dashboard-ui test-release
+./release-watch.sh 2 cd.yml bcgov/business-dashboard-ui test-release
 echo ""
 echo "bcgov/business-ui - checking web/business-registry-dashboard"
 echo ""
-~/Desktop/release-watch.sh 2 business-registry-ui-cd.yaml bcgov/business-ui test-release --in-dirs=web/business-registry-dashboard
+./release-watch.sh 2 business-registry-ui-cd.yaml bcgov/business-ui test-release --in-dirs=web/business-registry-dashboard
 
 echo "Repo Versions:"
 echo ""
