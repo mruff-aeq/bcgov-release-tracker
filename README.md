@@ -175,8 +175,8 @@ RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSA
 #286   test      success  deetz99          bf604df   2026-05-27 21:25:36   33422 - affiliation success m 
 
 test-release: merged PRs newer than the commit on test (#286 -> bf604df, excluded)
-TITLE                                      AUTHOR               PR      TICKET    Merged_Date  COMMIT    IN-DIRS 
------------------------------------------- -------------------- ------- -------   -----------  -------   --------
+TITLE                                      AUTHOR               PR      TICKET    Merged_Date  COMMIT    IN-DIRS=web/business-registry-dashboard
+------------------------------------------ -------------------- ------- -------   -----------  -------   ---------------------------------------
 33227 create/update Authentication and Ce  @eve-git             #486    #33421    2026-06-02   caf8d32   NA      
 chore: update versions                     @app/github-actions  #484    NA        2026-05-29   e686301   NA      
 32570 Do not show a dissolution alert for  @eve-git             #483    NA        2026-05-29   42efb5b   NA      
@@ -185,7 +185,7 @@ chore: update versions                     @app/github-actions  #484    NA      
 chore: update versions                     @app/github-actions  #480    NA        2026-05-27   60cb2e3   NA      
 
 <table>
-  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th><th>In-Dirs</th></tr>
+  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th><th>IN-DIRS=web/business-registry-dashboard</th></tr>
   <tr><td>33227 create/update Authentication and Certification component</td><td>@eve-git</td><td>#486</td><td><a href="https://github.com/bcgov/entity/issues/33421">#33421</a></td><td>2026-06-02</td><td>caf8d32</td><td>NA</td></tr>
   <tr><td>chore: update versions</td><td>@app/github-actions</td><td>#484</td><td>NA</td><td>2026-05-29</td><td>e686301</td><td>NA</td></tr>
   <tr><td>32570 Do not show a dissolution alert for businesses in liquidation</td><td>@eve-git</td><td>#483</td><td>NA</td><td>2026-05-29</td><td>42efb5b</td><td>NA</td></tr>
@@ -193,7 +193,6 @@ chore: update versions                     @app/github-actions  #480    NA      
   <tr><td>32483 - cleanup connectinputmenu component</td><td>@deetz99</td><td>#481</td><td><a href="https://github.com/bcgov/entity/issues/32483">#32483</a></td><td>2026-06-01</td><td>3088eeb</td><td>NA</td></tr>
   <tr><td>chore: update versions</td><td>@app/github-actions</td><td>#480</td><td>NA</td><td>2026-05-27</td><td>60cb2e3</td><td>NA</td></tr>
 </table>
-
 Repo Versions:
 
 business-edit-ui:       4.17.11
