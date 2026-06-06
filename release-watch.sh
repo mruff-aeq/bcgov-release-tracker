@@ -24,12 +24,12 @@
 # web/business-registry-dashboard
 #
 # Examples:
-#   bn-cd-runs                                  # last 6 of business-bn-cd.yml
+#   bn-cd-runs                                  
 #   bn-cd-runs 10                               # last 10
-#   bn-cd-runs 6 business-emailer-cd.yml        # a different workflow
-#   bn-cd-runs 6 some-cd.yml bcgov/some-repo    # a different repo
+#   bn-cd-runs 2 business-emailer-cd.yml        # a different workflow
+#   bn-cd-runs 2 some-cd.yml bcgov/some-repo    # a different repo
 #   bn-cd-runs 2 cd.yml bcgov/business-filings-ui test-release   # + PR table
-#   bn-cd-runs 6 cd.yml bcgov/business-ui test-release --in-dirs=web/business-registry-dashboard
+#   bn-cd-runs 2 cd.yml bcgov/business-ui test-release --in-dirs=web/business-registry-dashboard
 #
 # Requires: gh (authenticated), with repo + workflow scopes on the target repo.
 #
@@ -160,8 +160,12 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
 
   echo "test-release: merged PRs newer than the commit on test (#$STOP_RUN -> $STOP_SHA, excluded)"
   if [ "$IN_DIRS" -eq 1 ]; then
-    printf '%-42s %-20s %-7s %-9s %-12s %-9s %-8s\n' "TITLE" "AUTHOR" "PR" "TICKET" "Merged_Date" "COMMIT" "IN-DIRS"
-    printf '%-42s %-20s %-7s %-9s %-12s %-9s %-8s\n' "------------------------------------------" "--------------------" "-------" "-------" "-----------" "-------" "--------"
+    # Name the In-Dirs column after the directory filter actually supplied,
+    # e.g. IN-DIRS=web/business-registry-dashboard. Dashes match its width.
+    in_dirs_label="IN-DIRS=$IN_DIRS_ARG"
+    in_dirs_dashes=$(printf '%*s' "${#in_dirs_label}" '' | tr ' ' '-')
+    printf '%-42s %-20s %-7s %-9s %-12s %-9s %s\n' "TITLE" "AUTHOR" "PR" "TICKET" "Merged_Date" "COMMIT" "$in_dirs_label"
+    printf '%-42s %-20s %-7s %-9s %-12s %-9s %s\n' "------------------------------------------" "--------------------" "-------" "-------" "-----------" "-------" "$in_dirs_dashes"
   else
     printf '%-42s %-20s %-7s %-9s %-12s %-9s\n' "TITLE" "AUTHOR" "PR" "TICKET" "Merged_Date" "COMMIT"
     printf '%-42s %-20s %-7s %-9s %-12s %-9s\n' "------------------------------------------" "--------------------" "-------" "-------" "-----------" "-------"
@@ -200,7 +204,7 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
     echo
     echo "<table>"
     if [ "$IN_DIRS" -eq 1 ]; then
-      echo "  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th><th>In-Dirs</th></tr>"
+      echo "  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th><th>$(html_escape "IN-DIRS=$IN_DIRS_ARG")</th></tr>"
     else
       echo "  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>"
     fi
