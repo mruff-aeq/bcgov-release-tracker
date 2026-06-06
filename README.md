@@ -8,6 +8,21 @@ This toolkit consists of two scripts that work together to track GitHub Action d
 
 ---
 
+### 🚀 Quick Start & Usage
+
+To get started, clone the repository to your local machine, navigate into the directory, and run the wrapper script to generate your full report:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/mruff-aeq/bcgov-release-tracker.git
+
+# 2. Navigate into the directory
+cd bcgov-release-tracker
+
+# 3. Run the script to output deployment tables, PRs pending release, and current versions
+./release-output-script.sh
+```
+
 ### 🛠 Prerequisites
 
 To run these scripts, you must have the following installed on your machine:
