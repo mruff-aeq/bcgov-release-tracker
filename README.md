@@ -14,7 +14,7 @@ To get started, clone the repository to your local machine, navigate into the di
 
 ```bash
 # 1. Clone the repository
-git clone [https://github.com/mruff-aeq/bcgov-release-tracker.git](https://github.com/mruff-aeq/bcgov-release-tracker.git)
+git clone https://github.com/mruff-aeq/bcgov-release-tracker.git
 
 # 2. Navigate into the directory
 cd bcgov-release-tracker
