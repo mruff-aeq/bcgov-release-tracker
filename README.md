@@ -14,12 +14,15 @@ To get started, clone the repository to your local machine, navigate into the di
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/mruff-aeq/bcgov-release-tracker.git
+git clone [https://github.com/mruff-aeq/bcgov-release-tracker.git](https://github.com/mruff-aeq/bcgov-release-tracker.git)
 
 # 2. Navigate into the directory
 cd bcgov-release-tracker
 
-# 3. Run the script to output deployment tables, PRs pending release, and current versions
+# 3. Make the scripts executable
+chmod +x release-watch.sh release-output-script.sh
+
+# 4. Run the script to output deployment tables, PRs pending release, and current versions
 ./release-output-script.sh
 ```
 
