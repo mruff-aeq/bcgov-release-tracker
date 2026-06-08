@@ -23,7 +23,7 @@ cd bcgov-release-tracker
 chmod +x release-watch.sh release-output-script.sh
 
 # 4. Run the script to output deployment tables, PRs pending release, and current versions
-./release-output-script.sh
+./release-output-script.sh > pre-release-report.html
 ```
 
 ### 🛠 Prerequisites
