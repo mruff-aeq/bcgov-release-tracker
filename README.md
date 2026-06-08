@@ -193,6 +193,7 @@ chore: update versions                     @app/github-actions  #480    NA      
   <tr><td>32483 - cleanup connectinputmenu component</td><td>@deetz99</td><td>#481</td><td><a href="https://github.com/bcgov/entity/issues/32483">#32483</a></td><td>2026-06-01</td><td>3088eeb</td><td>NA</td></tr>
   <tr><td>chore: update versions</td><td>@app/github-actions</td><td>#480</td><td>NA</td><td>2026-05-27</td><td>60cb2e3</td><td>NA</td></tr>
 </table>
+
 Repo Versions:
 
 business-edit-ui:       4.17.11
