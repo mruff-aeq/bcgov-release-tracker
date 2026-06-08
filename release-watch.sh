@@ -202,7 +202,7 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
   # Raw HTML version of the second table (no CSS), printed after the text table.
   if [ "$shown" -gt 0 ]; then
     echo
-    echo "<table>"
+    echo "<table border=\"1\">"
     if [ "$IN_DIRS" -eq 1 ]; then
       echo "  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th><th>$(html_escape "IN-DIRS=$IN_DIRS_ARG")</th></tr>"
     else
