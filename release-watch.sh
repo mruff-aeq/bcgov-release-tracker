@@ -5,7 +5,7 @@
 # prod) pulled from each run's logs.
 #
 # Usage:
-#   bn-cd-runs [count] [workflow-file] [owner/repo] [test-release] [--in-dirs=DIR[,DIR...]]
+#   bn-cd-runs [count] [workflow-file] [owner/repo] [test-release] [--in-dirs=DIR[,DIR...]] [--html]
 #
 # Defaults:
 #   count          6
@@ -19,9 +19,13 @@
 #
 # --in-dirs=DIR[,DIR...] (requires `test-release`, else it errors) adds an extra
 # column to that second table: YES if the PR changed any file under DIR or one
-# of its child dirs, NA otherwise. Multiple dirs may be comma-separated; a PR
+# of its child dirs, NO otherwise. Multiple dirs may be comma-separated; a PR
 # matching ANY of them is YES. Example dir for bcgov/business-ui:
 # web/business-registry-dashboard
+#
+# --html (requires `test-release`) suppresses the TEXT rendering of that second
+# (merged-PR) table and prints only its HTML version. The first table — the last
+# CD runs — is always printed as text.
 #
 # Examples:
 #   bn-cd-runs                                  
@@ -48,11 +52,13 @@ set -uo pipefail
 TEST_RELEASE=0
 IN_DIRS=0
 IN_DIRS_ARG=""
+HTML=0
 pos=()
 for a in "$@"; do
   case "$a" in
     test-release)  TEST_RELEASE=1 ;;
     --in-dirs=*)   IN_DIRS=1; IN_DIRS_ARG="${a#--in-dirs=}" ;;
+    --html)        HTML=1 ;;
     *)             pos+=("$a") ;;
   esac
 done
@@ -68,6 +74,12 @@ if [ "$IN_DIRS" -eq 1 ]; then
     exit 1
   fi
   IFS=',' read -r -a IN_DIRS_ARR <<< "$IN_DIRS_ARG"
+fi
+
+# --html only affects the test-release (merged-PR) table.
+if [ "$HTML" -eq 1 ] && [ "$TEST_RELEASE" -ne 1 ]; then
+  echo "error: --html requires the 'test-release' argument" >&2
+  exit 1
 fi
 
 COUNT="${pos[0]:-6}"
@@ -105,7 +117,7 @@ html_escape() {
 }
 
 # Echo YES if PR #$1 changed any file under one of the IN_DIRS_ARR prefixes
-# (the dir itself or any child dir), NA otherwise. Used only with --in-dirs=.
+# (the dir itself or any child dir), NO otherwise. Used only with --in-dirs=.
 pr_in_dirs() {
   local pnum="${1#\#}" files f d
   files=$(gh pr view "$pnum" -R "$REPO" --json files --jq '.files[].path' 2>/dev/null)
@@ -118,7 +130,7 @@ pr_in_dirs() {
       esac
     done
   done <<< "$files"
-  echo "NA"
+  echo "NO"
 }
 
 printf '%-6s %-9s %-8s %-16s %-9s %-21s %-30s\n' "RUN" "ENV" "RESULT" "ACTOR" "COMMIT" "CREATED (UTC)" "MESSAGE"
@@ -158,17 +170,20 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
     exit 0
   fi
 
-  echo "test-release: merged PRs newer than the commit on test (#$STOP_RUN -> $STOP_SHA, excluded)"
-  if [ "$IN_DIRS" -eq 1 ]; then
-    # Name the In-Dirs column after the directory filter actually supplied,
-    # e.g. IN-DIRS=web/business-registry-dashboard. Dashes match its width.
-    in_dirs_label="IN-DIRS=$IN_DIRS_ARG"
-    in_dirs_dashes=$(printf '%*s' "${#in_dirs_label}" '' | tr ' ' '-')
-    printf '%-42s %-20s %-7s %-9s %-12s %-9s %s\n' "TITLE" "AUTHOR" "PR" "TICKET" "Merged_Date" "COMMIT" "$in_dirs_label"
-    printf '%-42s %-20s %-7s %-9s %-12s %-9s %s\n' "------------------------------------------" "--------------------" "-------" "-------" "-----------" "-------" "$in_dirs_dashes"
-  else
-    printf '%-42s %-20s %-7s %-9s %-12s %-9s\n' "TITLE" "AUTHOR" "PR" "TICKET" "Merged_Date" "COMMIT"
-    printf '%-42s %-20s %-7s %-9s %-12s %-9s\n' "------------------------------------------" "--------------------" "-------" "-------" "-----------" "-------"
+  # --html suppresses this text table (header + rows); only the HTML prints.
+  if [ "$HTML" -ne 1 ]; then
+    echo "test-release: merged PRs newer than the commit on test (#$STOP_RUN -> $STOP_SHA, excluded)"
+    if [ "$IN_DIRS" -eq 1 ]; then
+      # Name the In-Dirs column after the directory filter actually supplied,
+      # e.g. IN-DIRS=web/business-registry-dashboard. Dashes match its width.
+      in_dirs_label="IN-DIRS=$IN_DIRS_ARG"
+      in_dirs_dashes=$(printf '%*s' "${#in_dirs_label}" '' | tr ' ' '-')
+      printf '%-42s %-20s %-7s %-9s %-12s %-9s %s\n' "TITLE" "AUTHOR" "PR" "TICKET" "Merged_Date" "COMMIT" "$in_dirs_label"
+      printf '%-42s %-20s %-7s %-9s %-12s %-9s %s\n' "------------------------------------------" "--------------------" "-------" "-------" "-----------" "-------" "$in_dirs_dashes"
+    else
+      printf '%-42s %-20s %-7s %-9s %-12s %-9s\n' "TITLE" "AUTHOR" "PR" "TICKET" "Merged_Date" "COMMIT"
+      printf '%-42s %-20s %-7s %-9s %-12s %-9s\n' "------------------------------------------" "--------------------" "-------" "-------" "-----------" "-------"
+    fi
   fi
 
   # TICKET comes from the PR body line "*Issue #:* /bcgov/entity#NNNNN"; NA if absent.
@@ -181,10 +196,10 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
     pauthor="@$pauthor"   # prepend @ to the handle (used by both text and HTML)
     if [ "$IN_DIRS" -eq 1 ]; then
       changed=$(pr_in_dirs "$pnum")
-      printf '%-42.41s %-20.20s %-7s %-9s %-12s %-9s %-8s\n' "$ptitle" "$pauthor" "$pnum" "$pticket" "$pdate" "$psha" "$changed"
+      [ "$HTML" -ne 1 ] && printf '%-42.41s %-20.20s %-7s %-9s %-12s %-9s %-8s\n' "$ptitle" "$pauthor" "$pnum" "$pticket" "$pdate" "$psha" "$changed"
     else
       changed=""
-      printf '%-42.41s %-20.20s %-7s %-9s %-12s %-9s\n' "$ptitle" "$pauthor" "$pnum" "$pticket" "$pdate" "$psha"
+      [ "$HTML" -ne 1 ] && printf '%-42.41s %-20.20s %-7s %-9s %-12s %-9s\n' "$ptitle" "$pauthor" "$pnum" "$pticket" "$pdate" "$psha"
     fi
     pr_rows+=("$pnum"$'\t'"$pticket"$'\t'"$psha"$'\t'"$pdate"$'\t'"$pauthor"$'\t'"$ptitle"$'\t'"$changed")
     shown=$((shown + 1))
@@ -193,7 +208,7 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
     --jq '.[] | "#\(.number)\t\(((.body // "") | [scan("/bcgov/entity#([0-9]+)")] | if length>0 then "#"+.[0][0] else "NA" end))\t\((.mergeCommit.oid // "")[0:7])\t\(.mergedAt[0:10])\t\(.author.login)\t\(.title)"')
 
   if [ "$found" -eq 1 ] && [ "$shown" -eq 0 ]; then
-    echo "(none — test is up to date with the newest merged PR)"
+    [ "$HTML" -ne 1 ] && echo "(none — test is up to date with the newest merged PR)"
   elif [ "$found" -eq 0 ]; then
     echo "test-release: warning — commit $STOP_SHA (run #$STOP_RUN) not found in the last 100 merged PRs;" >&2
     echo "              the list above is not bounded to the test release. (Deploy commit may not be a PR merge commit.)" >&2
