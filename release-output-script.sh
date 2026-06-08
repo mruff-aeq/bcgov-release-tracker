@@ -1,5 +1,3 @@
-rm -f pre-release-report.html
-
 # bcgov/lear
 echo "<!-- bcgov/lear -->"
 echo "<h2>"
