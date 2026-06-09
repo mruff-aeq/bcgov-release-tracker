@@ -4,7 +4,7 @@ echo "<h2>"
 echo "bcgov/lear"
 echo "</h2>"
 echo "<pre>"
-./release-watch.sh 2 business-bn-cd.yml bcgov/lear test-release --html
+./pre-release-watch.sh 2 business-bn-cd.yml bcgov/lear test-release --html
 echo "</pre>"
 echo "<hr>"
 
@@ -14,7 +14,7 @@ echo "<h2>"
 echo "bcgov/business-filings-ui"
 echo "</h2>"
 echo "<pre>"
-./release-watch.sh 2 cd.yml bcgov/business-filings-ui test-release --html
+./per-release-watch.sh 2 cd.yml bcgov/business-filings-ui test-release --html
 echo "</pre>"
 echo "<hr>"
 
@@ -24,7 +24,7 @@ echo "<h2>"
 echo "bcgov/business-create-ui"
 echo "</h2>"
 echo "<pre>"
-./release-watch.sh 2 cd.yml bcgov/business-create-ui test-release --html
+./pre-release-watch.sh 2 cd.yml bcgov/business-create-ui test-release --html
 echo "</pre>"
 echo "<hr>"
 
@@ -34,7 +34,7 @@ echo "<h2>"
 echo "bcgov/business-edit-ui"
 echo "</h2>"
 echo "<pre>"
-./release-watch.sh 2 cd.yml bcgov/business-edit-ui test-release --html
+./pre-release-watch.sh 2 cd.yml bcgov/business-edit-ui test-release --html
 echo "</pre>"
 echo "<hr>"
 
@@ -44,7 +44,7 @@ echo "<h2>"
 echo "bcgov/business-dashboard-ui"
 echo "</h2>"
 echo "<pre>"
-./release-watch.sh 2 cd.yml bcgov/business-dashboard-ui test-release --html
+./pre-release-watch.sh 2 cd.yml bcgov/business-dashboard-ui test-release --html
 echo "</pre>"
 echo "<hr>"
 
@@ -54,7 +54,7 @@ echo "<h2>"
 echo "bcgov/business-ui (web/business-registry-dashboard)"
 echo "</h2>"
 echo "<pre>"
-./release-watch.sh 2 business-registry-ui-cd.yaml bcgov/business-ui test-release --in-dirs=web/business-registry-dashboard --html
+./pre-release-watch.sh 2 business-registry-ui-cd.yaml bcgov/business-ui test-release --in-dirs=web/business-registry-dashboard --html
 echo "</pre>"
 echo "<hr>"
 
