@@ -191,6 +191,8 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
     exit 0
   fi
 
+  echo "showing PRs between $STOP_SHA and $START_SHA"
+
   # --html suppresses this text table (header + rows); only the HTML prints.
   if [ "$HTML" -ne 1 ]; then
     echo "post-release: merged PRs deployed to test in the latest push"
