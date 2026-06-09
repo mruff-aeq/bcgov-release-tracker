@@ -10,7 +10,7 @@ This toolkit consists of two scripts that work together to track GitHub Action d
 
 ### 🚀 Quick Start & Usage
 
-Pre-Release-Report:
+Pre-Release-Report (For Devs):
 ```bash
 # 1. Clone the repository
 git clone https://github.com/mruff-aeq/bcgov-release-tracker.git
@@ -23,6 +23,21 @@ chmod +x pre-release-watch.sh pre-release-output-script.sh
 
 # 4. Run the script to output deployment tables, PRs pending release, and current versions
 ./pre-release-output-script.sh | tee "pre-release-report.html"
+```
+
+Post-Release-Report (For QA):
+```bash
+# 1. Clone the repository
+git clone https://github.com/mruff-aeq/bcgov-release-tracker.git
+
+# 2. Navigate into the directory
+cd bcgov-release-tracker
+
+# 3. Make the scripts executable
+chmod +x post-release-watch.sh post-release-output-script.sh
+
+# 4. Run the script to output deployment tables, PRs pending release, and current versions
+./post-release-output-script.sh | tee "post-release-report.html"
 ```
 
 ### 🛠 Prerequisites
