@@ -266,13 +266,16 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
       else
         ticket_cell="<a href=\"https://github.com/bcgov/entity/issues/${hticket#\#}\">$(html_escape "$hticket")</a>"
       fi
+      # PR cell -> link to the PR on the repo this table is for ($REPO), e.g.
+      # https://github.com/bcgov/lear/pull/123. $hnum is like "#123".
+      pr_cell="<a href=\"https://github.com/$REPO/pull/${hnum#\#}\">$(html_escape "$hnum")</a>"
       if [ "$IN_DIRS" -eq 1 ]; then
         printf '  <tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n' \
-          "$(html_escape "$htitle")" "$(html_escape "$hauthor")" "$(html_escape "$hnum")" \
+          "$(html_escape "$htitle")" "$(html_escape "$hauthor")" "$pr_cell" \
           "$ticket_cell" "$(html_escape "$hdate")" "$(html_escape "$hsha")" "$(html_escape "$hchanged")"
       else
         printf '  <tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n' \
-          "$(html_escape "$htitle")" "$(html_escape "$hauthor")" "$(html_escape "$hnum")" \
+          "$(html_escape "$htitle")" "$(html_escape "$hauthor")" "$pr_cell" \
           "$ticket_cell" "$(html_escape "$hdate")" "$(html_escape "$hsha")"
       fi
     done
