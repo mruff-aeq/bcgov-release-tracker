@@ -16,7 +16,7 @@ echo "<h2>"
 echo "bcgov/business-filings-ui"
 echo "</h2>"
 echo "<pre>"
-./per-release-watch.sh 2 cd.yml bcgov/business-filings-ui test-release --html
+./pre-release-watch.sh 2 cd.yml bcgov/business-filings-ui test-release --html
 echo "</pre>"
 echo "<hr>"
 
