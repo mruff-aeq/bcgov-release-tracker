@@ -347,14 +347,17 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
       # PR cell -> link to the PR on the repo this table is for ($REPO), e.g.
       # https://github.com/bcgov/lear/pull/123. $hnum is like "#123".
       pr_cell="<a href=\"https://github.com/$REPO/pull/${hnum#\#}\">$(html_escape "$hnum")</a>"
+      # Commit cell -> link to the commit on the repo this table is for ($REPO),
+      # e.g. https://github.com/bcgov/lear/commit/abc1234.
+      commit_cell="<a href=\"https://github.com/$REPO/commit/$hsha\">$(html_escape "$hsha")</a>"
       if [ "$IN_DIRS" -eq 1 ]; then
         printf '  <tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n' \
           "$(html_escape "$htitle")" "$(html_escape "$hauthor")" "$pr_cell" \
-          "$ticket_cell" "$(html_escape "$hdate")" "$(html_escape "$hsha")" "$(html_escape "$hchanged")"
+          "$ticket_cell" "$(html_escape "$hdate")" "$commit_cell" "$(html_escape "$hchanged")"
       else
         printf '  <tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n' \
           "$(html_escape "$htitle")" "$(html_escape "$hauthor")" "$pr_cell" \
-          "$ticket_cell" "$(html_escape "$hdate")" "$(html_escape "$hsha")"
+          "$ticket_cell" "$(html_escape "$hdate")" "$commit_cell"
       fi
     done
     echo "</table>"
