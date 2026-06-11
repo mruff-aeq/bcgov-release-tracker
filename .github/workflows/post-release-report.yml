@@ -60,7 +60,14 @@ jobs:
           git add post-release-report/post-release-report.html
           if git diff --staged --quiet; then
             echo "No change in the report — nothing to commit."
-          else
-            git commit -m "Update post-release report [skip ci]"
-            git push
+            exit 0
           fi
+          git commit -m "Update post-release report [skip ci]"
+          # Retry on a concurrent push from the pre-release workflow. The two
+          # reports touch different files, so the rebase never conflicts.
+          for attempt in 1 2 3 4 5; do
+            git push && exit 0
+            echo "push rejected (attempt $attempt) — rebasing on latest main…"
+            git pull --rebase origin main || exit 1
+          done
+          echo "::error::could not push report after retries"; exit 1
