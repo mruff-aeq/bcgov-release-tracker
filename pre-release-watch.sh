@@ -22,6 +22,8 @@
 # of its child dirs, NO otherwise. Multiple dirs may be comma-separated; a PR
 # matching ANY of them is YES. Example dir for bcgov/business-ui:
 # web/business-registry-dashboard
+# This check is done from a local clone (see below), not the API, so it adds
+# no API calls regardless of how many PRs are in the list. Requires `git`.
 #
 # --html (requires `test-release`) suppresses the TEXT rendering of that second
 # (merged-PR) table and prints only its HTML version. The first table — the last
@@ -35,14 +37,17 @@
 #   bn-cd-runs 2 cd.yml bcgov/business-filings-ui test-release   # + PR table
 #   bn-cd-runs 2 cd.yml bcgov/business-ui test-release --in-dirs=web/business-registry-dashboard
 #
-# Requires: curl, jq. NO authentication needed — these bcgov repos are public,
-# and everything this script reads is on the public REST API. Anonymous calls
-# to api.github.com are capped at 60/hour per IP. This makes 3 calls per repo
-# (deployments + runs + PR list), PLUS — only with --in-dirs= — one extra call
-# per pending PR (to read its changed files). So a run's cost grows with how far
-# the --in-dirs= repo is behind test. To keep a large backlog from exhausting
-# the budget, if that repo is more than IN_DIRS_MAX (default 30) PRs behind
-# test, the per-PR lookups are skipped and the IN-DIRS column reads SKIP.
+# Requires: curl, jq (and git only when --in-dirs= is used). NO authentication
+# needed — these bcgov repos are public, and everything this script reads is on
+# the public REST API. Anonymous calls to api.github.com are capped at 60/hour
+# per IP. This makes a FIXED 3 calls per repo (deployments + runs + PR list),
+# regardless of how many PRs are listed.
+#
+# --in-dirs= adds NO API calls: instead of querying each PR's changed files via
+# the API, it does one blobless, no-checkout `git clone` of the repo (commits +
+# trees only, no file contents — ~1-2 MB, ~1 s) and reads each PR's changed
+# files locally from its merge commit. Git transport is not part of the REST
+# rate limit, so the per-PR cost is removed entirely.
 #
 # How the deploy environment is resolved:
 #   - The deploy target is NOT exposed by the workflow-runs API. We instead read
@@ -99,14 +104,12 @@ COUNT="${pos[0]:-6}"
 WORKFLOW="${pos[1]:-business-bn-cd.yml}"
 REPO="${pos[2]:-bcgov/lear}"
 
-# Budget for --in-dirs= per-PR file lookups (one anonymous API call each). If a
-# repo is more than this many PRs behind test, we skip those lookups entirely so
-# a large backlog can't exhaust the 60/hour anonymous rate limit; the IN-DIRS
-# column then reads SKIP. Override with e.g. IN_DIRS_MAX=50 to force more.
-IN_DIRS_MAX="${IN_DIRS_MAX:-30}"
-
 command -v curl >/dev/null 2>&1 || { echo "error: curl not found" >&2; exit 1; }
 command -v jq   >/dev/null 2>&1 || { echo "error: jq not found"   >&2; exit 1; }
+# --in-dirs= reads changed files from a local clone, so it needs git.
+if [ "$IN_DIRS" -eq 1 ]; then
+  command -v git >/dev/null 2>&1 || { echo "error: git not found (needed for --in-dirs=)" >&2; exit 1; }
+fi
 
 # --- public GitHub REST API helper ------------------------------------------
 # No auth: these repos are public and every endpoint below serves anonymous
@@ -141,24 +144,40 @@ html_escape() {
   printf '%s' "$1" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
 }
 
-# Echo YES if PR #$1 changed any file under one of the IN_DIRS_ARR prefixes
-# (the dir itself or any child dir), NO otherwise. Used only with --in-dirs=.
-# Echoes ERR if the file list couldn't be fetched (e.g. an anonymous-rate-limit
-# 403) so a throttled run shows ERR rather than a false NO.
+# --in-dirs= reads each PR's changed files from a local clone instead of the
+# API. CLONE_STATE is "" (not yet attempted), "ok", or "fail". The clone is
+# blobless + no-checkout: it pulls commits and trees (enough for name-only
+# diffs) but no file contents and no working tree — a couple MB, about a second.
+CLONE_DIR=""; CLONE_STATE=""
+ensure_clone() {
+  [ -n "$CLONE_STATE" ] && { [ "$CLONE_STATE" = ok ]; return; }
+  CLONE_DIR=$(mktemp -d)
+  trap 'rm -rf "$CLONE_DIR"' EXIT
+  if git clone --quiet --filter=blob:none --no-checkout "https://github.com/$REPO.git" "$CLONE_DIR" 2>/dev/null; then
+    CLONE_STATE=ok; return 0
+  fi
+  CLONE_STATE=fail
+  echo "in-dirs: git clone of $REPO failed — IN-DIRS column will show ERR." >&2
+  return 1
+}
+
+# Echo YES if the PR whose merge commit is $1 (a 7-char SHA) changed any file
+# under one of the IN_DIRS_ARR prefixes, NO otherwise. Used only with --in-dirs=.
+# Echoes ERR if the clone failed or the commit isn't present.
+# The PR's changes are the diff of its merge commit against its first parent
+# (the base branch) — which works for both squash merges (1 parent) and merge
+# commits (2 parents). Git pathspecs match at directory boundaries.
 pr_in_dirs() {
-  local pnum="${1#\#}" raw files f d
-  raw=$(api "/repos/$REPO/pulls/$pnum/files?per_page=100") || { echo "ERR"; return; }
-  files=$(printf '%s' "$raw" | jq -r '.[].filename' 2>/dev/null)
-  while IFS= read -r f; do
-    [ -z "$f" ] && continue
-    for d in "${IN_DIRS_ARR[@]}"; do
-      d="${d%/}"   # tolerate a trailing slash in the supplied dir
-      case "$f" in
-        "$d"/*) echo "YES"; return ;;
-      esac
-    done
-  done <<< "$files"
-  echo "NO"
+  local sha="$1" base nparents
+  ensure_clone || { echo "ERR"; return; }
+  git -C "$CLONE_DIR" cat-file -e "${sha}^{commit}" 2>/dev/null || { echo "ERR"; return; }
+  nparents=$(( $(git -C "$CLONE_DIR" rev-list --parents -n1 "$sha" 2>/dev/null | wc -w) - 1 ))
+  if [ "$nparents" -ge 2 ]; then base="${sha}^1"; else base="${sha}^"; fi
+  if git -C "$CLONE_DIR" diff --name-only "$base" "$sha" -- "${IN_DIRS_ARR[@]}" 2>/dev/null | grep -q .; then
+    echo "YES"
+  else
+    echo "NO"
+  fi
 }
 
 printf '%-6s %-9s %-8s %-16s %-9s %-21s %-30s\n' "RUN" "ENV" "RESULT" "ACTOR" "COMMIT" "CREATED (UTC)" "MESSAGE"
@@ -242,22 +261,6 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
   # Full title is carried for the HTML table; the text table truncates with %.41s.
   PRS_JSON=$(api "/repos/$REPO/pulls?state=closed&per_page=100&sort=updated&direction=desc") || PRS_JSON='[]'
 
-  # Accounting: count how many merged PRs sit above the commit on test (= the
-  # number of per-PR /files calls --in-dirs= would make). If that exceeds the
-  # budget, skip those lookups so one badly-behind repo can't blow the 60/hour
-  # anonymous rate limit; the IN-DIRS column reads SKIP instead.
-  SKIP_IN_DIRS=0
-  if [ "$IN_DIRS" -eq 1 ]; then
-    pending=$(printf '%s' "$PRS_JSON" | jq -r --arg stop "$STOP_SHA" '
-      [ .[] | select(.merged_at != null) ] | sort_by(.merged_at) | reverse
-      | (map(.merge_commit_sha[0:7]) | index($stop)) // length')
-    if [ "$pending" -gt "$IN_DIRS_MAX" ]; then
-      SKIP_IN_DIRS=1
-      echo "in-dirs: $REPO is $pending PRs behind test (> IN_DIRS_MAX=$IN_DIRS_MAX);" >&2
-      echo "         skipping per-PR file lookups to stay under the API rate limit (IN-DIRS column = SKIP)." >&2
-    fi
-  fi
-
   found=0; shown=0
   pr_rows=()
   while IFS=$'\t' read -r pnum pticket psha pdate pauthor ptitle; do
@@ -266,7 +269,7 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
     if [ "$psha" = "$STOP_SHA" ]; then found=1; break; fi
     pauthor="@$pauthor"   # prepend @ to the handle (used by both text and HTML)
     if [ "$IN_DIRS" -eq 1 ]; then
-      if [ "$SKIP_IN_DIRS" -eq 1 ]; then changed="SKIP"; else changed=$(pr_in_dirs "$pnum"); fi
+      changed=$(pr_in_dirs "$psha")
       [ "$HTML" -ne 1 ] && printf '%-42.41s %-20.20s %-7s %-9s %-12s %-9s %-8s\n' "$ptitle" "$pauthor" "$pnum" "$pticket" "$pdate" "$psha" "$changed"
     else
       changed=""
