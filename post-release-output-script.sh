@@ -1,4 +1,5 @@
 echo "<h1>Post-Release Report (PRs that have been pushed into TEST this release cycle)</h1>"
+echo "<p>Generated: $(TZ='America/Vancouver' date '+%A, %B %-d, %Y at %-I:%M %p %Z')</p>"
 
 # bcgov/lear
 echo "<!-- bcgov/lear -->"
