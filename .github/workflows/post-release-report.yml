@@ -1,0 +1,60 @@
+name: Post-release report
+
+# Generates the post-release report every 4 hours and commits the HTML into
+# post-release-report/. The scripts hit the public GitHub API unauthenticated
+# (~30 calls/run). Anonymous calls are capped at 60/hour per runner IP, which
+# is shared across tenants — so a run can occasionally be throttled. The
+# "Generate" step below detects that and FAILS instead of committing a broken
+# report over a good one, so a throttled run is a visible red X, not corruption.
+#
+# Scheduled 2 hours offset from the pre-release report (which runs at :00 of
+# hours 0,4,8,...) so the two jobs don't compete for the same hourly API budget.
+
+on:
+  schedule:
+    - cron: '0 2-22/4 * * *'   # every 4 hours at hours 2,6,10,14,18,22 (UTC)
+  workflow_dispatch: {}        # allow manual runs from the Actions tab
+
+# Allow the job to push the regenerated report back to the repo.
+permissions:
+  contents: write
+
+# Never let two report runs overlap (they'd race on the commit/push).
+concurrency:
+  group: post-release-report
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Generate report
+        run: |
+          set -o pipefail
+          mkdir -p post-release-report
+          # stdout -> the HTML file; stderr -> a log we inspect for throttling.
+          bash post-release-output-script.sh 2>/tmp/report.err \
+            | tee post-release-report/post-release-report.html
+          echo "----- script stderr -----"
+          cat /tmp/report.err || true
+          # Bail (red X, no commit) if the run was rate-limited or a runs fetch
+          # failed, so we don't overwrite a good report with a degraded one.
+          if grep -qE 'error: (403|429)|failed to fetch runs' /tmp/report.err; then
+            echo "::error::GitHub API throttled or a runs fetch failed — not committing this report."
+            exit 1
+          fi
+
+      - name: Commit report if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add post-release-report/post-release-report.html
+          if git diff --staged --quiet; then
+            echo "No change in the report — nothing to commit."
+          else
+            git commit -m "Update post-release report [skip ci]"
+            git push
+          fi
