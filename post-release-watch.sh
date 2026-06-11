@@ -45,11 +45,11 @@
 #   post-release-watch 10 cd.yml bcgov/business-filings-ui test-release   # + PR table
 #   post-release-watch 10 cd.yml bcgov/business-ui test-release --in-dirs=web/business-registry-dashboard
 #
-# Requires: curl, jq (and git only when --in-dirs= is used). NO authentication
-# needed — these bcgov repos are public, and everything this script reads is on
-# the public REST API. Anonymous calls to api.github.com are capped at 60/hour
-# per IP. This makes a FIXED 3 calls per repo (deployments + runs + PR list),
-# regardless of how many PRs are in the window.
+# Requires: curl, jq (and git only when --in-dirs= is used). No authentication is
+# required (these bcgov repos are public), but an optional GH_TOKEN/GITHUB_TOKEN
+# is used if present — see the api() helper. Anonymous calls share a 60/hour-per-
+# IP cap; a token gets its own ~1000-5000/hour. This makes a FIXED 3 calls per
+# repo (deployments + runs + PR list), regardless of how many PRs are in the window.
 #
 # --in-dirs= adds NO API calls: instead of querying each PR's changed files via
 # the API, it does one blobless, no-checkout `git clone` of the repo (commits +
@@ -119,14 +119,19 @@ if [ "$IN_DIRS" -eq 1 ]; then
 fi
 
 # --- public GitHub REST API helper ------------------------------------------
-# No auth: these repos are public and every endpoint below serves anonymous
-# callers. Plain unauthenticated curl, nothing else.
+# These repos are public, so no auth is required. But if GH_TOKEN or GITHUB_TOKEN
+# is set (e.g. injected by GitHub Actions), we send it: anonymous calls share a
+# 60/hour-per-IP cap (easily exhausted on shared CI runner IPs), while a token
+# gets its own ~1000-5000/hour budget. Either way we read only public data.
 API="https://api.github.com"
+AUTH_HEADER=()
+_TOKEN="${GH_TOKEN:-${GITHUB_TOKEN:-}}"
+[ -n "$_TOKEN" ] && AUTH_HEADER=(-H "Authorization: Bearer $_TOKEN")
 
 api() {  # api <path-or-full-url> ; prints body, returns curl's exit status
   local url="$1"
   case "$url" in http*) ;; *) url="$API$url" ;; esac
-  curl -fsSL \
+  curl -fsSL "${AUTH_HEADER[@]}" \
     -H "Accept: application/vnd.github+json" \
     -H "X-GitHub-Api-Version: 2022-11-28" \
     "$url"

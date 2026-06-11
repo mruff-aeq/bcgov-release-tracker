@@ -1,15 +1,15 @@
 name: Post-release report
 
 # Generates the post-release report every hour and commits the HTML into
-# post-release-report/. The scripts hit the public GitHub API unauthenticated
-# (~30 calls/run). Anonymous calls are capped at 60/hour per runner IP, which
-# is shared across tenants — so a run can occasionally be throttled. The
-# "Generate" step below detects that and FAILS instead of committing a broken
-# report over a good one, so a throttled run is a visible red X, not corruption.
+# post-release-report/. The scripts read the public GitHub API (~18 calls/run),
+# authenticated with the built-in GITHUB_TOKEN (injected below) so they use that
+# token's ~1000/hour budget rather than the 60/hour anonymous per-IP cap that
+# shared runner IPs frequently exhaust. As a safety net the "Generate" step still
+# FAILS instead of committing if it ever sees a throttle/fetch error, so a bad
+# run is a visible red X, never a corrupt report.
 #
 # Scheduled at :30, offset from the pre-release report (which runs at :00), just
-# to keep the two from firing at the same minute. Each report is only ~18 API
-# calls (well under the 60/hour anonymous cap), so even together they're fine.
+# to keep the two from firing at the same minute.
 
 on:
   schedule:
@@ -33,6 +33,11 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Generate report
+        env:
+          # Built-in token (auto-provided, no setup/secret needed). Authenticates
+          # the API calls so they use the ~1000/hour token budget instead of the
+          # 60/hour anonymous cap that shared runner IPs frequently exhaust.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -o pipefail
           mkdir -p post-release-report
