@@ -275,6 +275,9 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
     pauthor="@$pauthor"   # prepend @ to the handle (used by both text and HTML)
     if [ "$IN_DIRS" -eq 1 ]; then
       changed=$(pr_in_dirs "$psha")
+      # With --in-dirs, drop PRs that didn't touch the filtered dirs (NO); keep
+      # YES and ERR (ERR is a clone/lookup failure worth surfacing).
+      [ "$changed" = "NO" ] && continue
       [ "$HTML" -ne 1 ] && printf '%-42.41s %-20.20s %-7s %-9s %-12s %-9s %-8s\n' "$ptitle" "$pauthor" "$pnum" "$pticket" "$pdate" "$psha" "$changed"
     else
       changed=""
@@ -292,7 +295,13 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
       .title ] | @tsv')
 
   if [ "$found" -eq 1 ] && [ "$shown" -eq 0 ]; then
-    [ "$HTML" -ne 1 ] && echo "(none — test is up to date with the newest merged PR)"
+    # With --in-dirs every in-scope PR may have been filtered out (all NO); say
+    # so explicitly (printed in HTML too, since there's no table to show).
+    if [ "$IN_DIRS" -eq 1 ]; then
+      echo "No commits in IN-DIRS=$IN_DIRS_ARG"
+    else
+      [ "$HTML" -ne 1 ] && echo "(none — test is up to date with the newest merged PR)"
+    fi
   elif [ "$found" -eq 0 ]; then
     echo "test-release: warning — commit $STOP_SHA (newest test run of $WORKFLOW) not found in the last 100 merged PRs;" >&2
     echo "              the list above is not bounded to the test release. (Deploy commit may not be a PR merge commit.)" >&2
