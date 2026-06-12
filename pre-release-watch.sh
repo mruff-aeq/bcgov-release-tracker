@@ -248,17 +248,11 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
   # --html suppresses this text table (header + rows); only the HTML prints.
   if [ "$HTML" -ne 1 ]; then
     echo "test-release: merged PRs newer than the commit on test ($STOP_SHA, test run dated $STOP_WHEN, excluded)"
-    if [ "$IN_DIRS" -eq 1 ]; then
-      # Name the In-Dirs column after the directory filter actually supplied,
-      # e.g. IN-DIRS=web/business-registry-dashboard. Dashes match its width.
-      in_dirs_label="IN-DIRS=$IN_DIRS_ARG"
-      in_dirs_dashes=$(printf '%*s' "${#in_dirs_label}" '' | tr ' ' '-')
-      printf '%-42s %-20s %-7s %-9s %-12s %-9s %s\n' "TITLE" "AUTHOR" "PR" "TICKET" "Merged_Date" "COMMIT" "$in_dirs_label"
-      printf '%-42s %-20s %-7s %-9s %-12s %-9s %s\n' "------------------------------------------" "--------------------" "-------" "-------" "-----------" "-------" "$in_dirs_dashes"
-    else
-      printf '%-42s %-20s %-7s %-9s %-12s %-9s\n' "TITLE" "AUTHOR" "PR" "TICKET" "Merged_Date" "COMMIT"
-      printf '%-42s %-20s %-7s %-9s %-12s %-9s\n' "------------------------------------------" "--------------------" "-------" "-------" "-----------" "-------"
-    fi
+    # With --in-dirs the rows are already filtered to commits that touched the
+    # dirs, so the table looks like the others — just label it with the filter.
+    [ "$IN_DIRS" -eq 1 ] && echo "these are the commits IN-DIRS=$IN_DIRS_ARG"
+    printf '%-42s %-20s %-7s %-9s %-12s %-9s\n' "TITLE" "AUTHOR" "PR" "TICKET" "Merged_Date" "COMMIT"
+    printf '%-42s %-20s %-7s %-9s %-12s %-9s\n' "------------------------------------------" "--------------------" "-------" "-------" "-----------" "-------"
   fi
 
   # Pull recent closed PRs, keep the merged ones, newest-merged first. TICKET
@@ -278,11 +272,10 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
       # With --in-dirs, drop PRs that didn't touch the filtered dirs (NO); keep
       # YES and ERR (ERR is a clone/lookup failure worth surfacing).
       [ "$changed" = "NO" ] && continue
-      [ "$HTML" -ne 1 ] && printf '%-42.41s %-20.20s %-7s %-9s %-12s %-9s %-8s\n' "$ptitle" "$pauthor" "$pnum" "$pticket" "$pdate" "$psha" "$changed"
     else
       changed=""
-      [ "$HTML" -ne 1 ] && printf '%-42.41s %-20.20s %-7s %-9s %-12s %-9s\n' "$ptitle" "$pauthor" "$pnum" "$pticket" "$pdate" "$psha"
     fi
+    [ "$HTML" -ne 1 ] && printf '%-42.41s %-20.20s %-7s %-9s %-12s %-9s\n' "$ptitle" "$pauthor" "$pnum" "$pticket" "$pdate" "$psha"
     pr_rows+=("$pnum"$'\t'"$pticket"$'\t'"$psha"$'\t'"$pdate"$'\t'"$pauthor"$'\t'"$ptitle"$'\t'"$changed")
     shown=$((shown + 1))
   done < <(printf '%s' "$PRS_JSON" | jq -r '
@@ -310,12 +303,11 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
   # Raw HTML version of the second table (no CSS), printed after the text table.
   if [ "$shown" -gt 0 ]; then
     echo
+    # With --in-dirs the rows are already filtered to commits that touched the
+    # dirs, so the table looks like the others — just label it with the filter.
+    [ "$IN_DIRS" -eq 1 ] && echo "these are the commits IN-DIRS=$IN_DIRS_ARG"
     echo "<table border=\"1\">"
-    if [ "$IN_DIRS" -eq 1 ]; then
-      echo "  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th><th>$(html_escape "IN-DIRS=$IN_DIRS_ARG")</th></tr>"
-    else
-      echo "  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>"
-    fi
+    echo "  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>"
     for r in "${pr_rows[@]}"; do
       IFS=$'\t' read -r hnum hticket hsha hdate hauthor htitle hchanged <<< "$r"
       # Ticket cell -> link to the bcgov/entity issue, unless it's NA.
@@ -330,15 +322,9 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
       # Commit cell -> link to the commit on the repo this table is for ($REPO),
       # e.g. https://github.com/bcgov/lear/commit/abc1234.
       commit_cell="<a href=\"https://github.com/$REPO/commit/$hsha\">$(html_escape "$hsha")</a>"
-      if [ "$IN_DIRS" -eq 1 ]; then
-        printf '  <tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n' \
-          "$(html_escape "$htitle")" "$(html_escape "$hauthor")" "$pr_cell" \
-          "$ticket_cell" "$(html_escape "$hdate")" "$commit_cell" "$(html_escape "$hchanged")"
-      else
-        printf '  <tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n' \
-          "$(html_escape "$htitle")" "$(html_escape "$hauthor")" "$pr_cell" \
-          "$ticket_cell" "$(html_escape "$hdate")" "$commit_cell"
-      fi
+      printf '  <tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n' \
+        "$(html_escape "$htitle")" "$(html_escape "$hauthor")" "$pr_cell" \
+        "$ticket_cell" "$(html_escape "$hdate")" "$commit_cell"
     done
     echo "</table>"
   fi
