@@ -1,15 +1,75 @@
 echo "<h1>Pre-Release Report (PRs to be pushed into TEST)</h1>"
 echo "<p>Generated: $(TZ='America/Vancouver' date '+%A, %B %-d, %Y at %-I:%M %p %Z')</p>"
 
-# bcgov/lear
-echo "<!-- bcgov/lear -->"
+# bcgov/lear is a monorepo whose queue_services/* child dirs (excluding common)
+# are each deployed by their own CD workflow. We list one table per child dir,
+# filtered with --in-dirs=queue_services/<child> so each table denotes only the
+# PRs that actually changed that component. --in-dirs reads changed files from a
+# blobless git clone of lear (not the API), so these tables add no per-PR API
+# calls — lear being first in the list, the clone work happens up front.
+#
+# Clone lear ONCE and share it across all five queue_services tables via
+# IN_DIRS_CLONE_DIR (see ensure_clone in pre-release-watch.sh): the first table
+# populates this dir, the other four reuse it, and we remove it afterwards.
+# stdout is the report HTML, so mktemp's path is captured into the var (not
+# printed). If the clone can't be made each table just falls back to its own.
+LEAR_CLONE_DIR="$(mktemp -d)"
+export IN_DIRS_CLONE_DIR="$LEAR_CLONE_DIR"
+
+# bcgov/lear (queue_services/business-bn)
+echo "<!-- bcgov/lear queue_services/business-bn -->"
 echo "<h2>"
-echo "bcgov/lear"
+echo "bcgov/lear (queue_services/business-bn)"
 echo "</h2>"
 echo "<pre>"
-./pre-release-watch.sh 2 business-bn-cd.yml bcgov/lear test-release --html
+./pre-release-watch.sh 2 business-bn-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-bn --html
 echo "</pre>"
 echo "<hr>"
+
+# bcgov/lear (queue_services/business-digital-credentials)
+echo "<!-- bcgov/lear queue_services/business-digital-credentials -->"
+echo "<h2>"
+echo "bcgov/lear (queue_services/business-digital-credentials)"
+echo "</h2>"
+echo "<pre>"
+./pre-release-watch.sh 2 business-digital-credentials-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-digital-credentials --html
+echo "</pre>"
+echo "<hr>"
+
+# bcgov/lear (queue_services/business-emailer)
+echo "<!-- bcgov/lear queue_services/business-emailer -->"
+echo "<h2>"
+echo "bcgov/lear (queue_services/business-emailer)"
+echo "</h2>"
+echo "<pre>"
+./pre-release-watch.sh 2 business-emailer-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-emailer --html
+echo "</pre>"
+echo "<hr>"
+
+# bcgov/lear (queue_services/business-filer)
+echo "<!-- bcgov/lear queue_services/business-filer -->"
+echo "<h2>"
+echo "bcgov/lear (queue_services/business-filer)"
+echo "</h2>"
+echo "<pre>"
+./pre-release-watch.sh 2 business-filer-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-filer --html
+echo "</pre>"
+echo "<hr>"
+
+# bcgov/lear (queue_services/business-pay)
+echo "<!-- bcgov/lear queue_services/business-pay -->"
+echo "<h2>"
+echo "bcgov/lear (queue_services/business-pay)"
+echo "</h2>"
+echo "<pre>"
+./pre-release-watch.sh 2 business-pay-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-pay --html
+echo "</pre>"
+echo "<hr>"
+
+# Done with lear's per-dir tables — drop the shared clone so later (non-lear)
+# repos fall back to their own --in-dirs clones as usual.
+unset IN_DIRS_CLONE_DIR
+rm -rf "$LEAR_CLONE_DIR"
 
 # bcgov/business-filings-ui
 echo "<!-- bcgov/business-filings-ui -->"
@@ -95,6 +155,31 @@ echo "  </li>"
 echo "  <li><strong>legal-api</strong>"
 echo "    <ul>"
 echo "      <li>$(curl -fsSL https://raw.githubusercontent.com/bcgov/lear/refs/heads/main/legal-api/src/legal_api/version.py | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')</li>"
+echo "    </ul>"
+echo "  </li>"
+echo "  <li><strong>queue_services/business-bn</strong>"
+echo "    <ul>"
+echo "      <li>$(curl -fsSL https://raw.githubusercontent.com/bcgov/lear/refs/heads/main/queue_services/business-bn/pyproject.toml | grep -E '^version' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')</li>"
+echo "    </ul>"
+echo "  </li>"
+echo "  <li><strong>queue_services/business-digital-credentials</strong>"
+echo "    <ul>"
+echo "      <li>$(curl -fsSL https://raw.githubusercontent.com/bcgov/lear/refs/heads/main/queue_services/business-digital-credentials/pyproject.toml | grep -E '^version' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')</li>"
+echo "    </ul>"
+echo "  </li>"
+echo "  <li><strong>queue_services/business-emailer</strong>"
+echo "    <ul>"
+echo "      <li>$(curl -fsSL https://raw.githubusercontent.com/bcgov/lear/refs/heads/main/queue_services/business-emailer/pyproject.toml | grep -E '^version' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')</li>"
+echo "    </ul>"
+echo "  </li>"
+echo "  <li><strong>queue_services/business-filer</strong>"
+echo "    <ul>"
+echo "      <li>$(curl -fsSL https://raw.githubusercontent.com/bcgov/lear/refs/heads/main/queue_services/business-filer/pyproject.toml | grep -E '^version' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')</li>"
+echo "    </ul>"
+echo "  </li>"
+echo "  <li><strong>queue_services/business-pay</strong>"
+echo "    <ul>"
+echo "      <li>$(curl -fsSL https://raw.githubusercontent.com/bcgov/lear/refs/heads/main/queue_services/business-pay/pyproject.toml | grep -E '^version' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')</li>"
 echo "    </ul>"
 echo "  </li>"
 echo "</ul>"
