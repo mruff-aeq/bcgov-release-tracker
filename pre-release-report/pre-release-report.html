@@ -1,5 +1,5 @@
 <h1>Pre-Release Report (PRs to be pushed into TEST)</h1>
-<p>Generated: Monday, June 15, 2026 at 11:25 AM PDT</p>
+<p>Generated: Monday, June 15, 2026 at 11:48 AM PDT</p>
 <!-- bcgov/lear -->
 <h2>
 bcgov/lear
@@ -13,6 +13,7 @@ RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSA
 
 <table border="1">
   <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
+  <tr><td>33813 - update legal-api version</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4494">#4494</a></td><td><a href="https://github.com/bcgov/entity/issues/33813">#33813</a></td><td>2026-06-15</td><td><a href="https://github.com/bcgov/lear/commit/4396309">4396309</a></td></tr>
   <tr><td>33690 - bump filer to pick up CONTINUATION_OUT DocumentType from business_model</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4489">#4489</a></td><td><a href="https://github.com/bcgov/entity/issues/33690">#33690</a></td><td>2026-06-15</td><td><a href="https://github.com/bcgov/lear/commit/6588a9e">6588a9e</a></td></tr>
   <tr><td>33809 Add verify auth flow</td><td>@argush3</td><td><a href="https://github.com/bcgov/lear/pull/4487">#4487</a></td><td><a href="https://github.com/bcgov/entity/issues/33809">#33809</a></td><td>2026-06-15</td><td><a href="https://github.com/bcgov/lear/commit/b8fc78e">b8fc78e</a></td></tr>
   <tr><td>33690 - return staff-uploaded Continuation Out documents in filing documents</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4482">#4482</a></td><td><a href="https://github.com/bcgov/entity/issues/33690">#33690</a></td><td>2026-06-15</td><td><a href="https://github.com/bcgov/lear/commit/8249088">8249088</a></td></tr>
@@ -42,16 +43,9 @@ bcgov/business-filings-ui
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#1037  ?         2026-06-15T18:45:02Z 33690 - modify Detail to staff only view and add filing-specific detail labels (#814) 79fc1ad   mruff-aeq                                           
 #1033  test      success  meawong          b1021e1   2026-06-08 19:27:36   33407 continuation out detail 
-#1031  prod      success  mruff-aeq        e607fdd   2026-06-04 19:02:08   33571 - bump @bcrs-shared-com 
 
-
-<table border="1">
-  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
-  <tr><td>33690 - modify Detail to staff only view and add filing-specific detail labels</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/business-filings-ui/pull/814">#814</a></td><td><a href="https://github.com/bcgov/entity/issues/33690">#33690</a></td><td>2026-06-11</td><td><a href="https://github.com/bcgov/business-filings-ui/commit/79fc1ad">79fc1ad</a></td></tr>
-  <tr><td>33408 add document upload component</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/business-filings-ui/pull/813">#813</a></td><td><a href="https://github.com/bcgov/entity/issues/33408">#33408</a></td><td>2026-06-10</td><td><a href="https://github.com/bcgov/business-filings-ui/commit/e81ade2">e81ade2</a></td></tr>
-  <tr><td>33519 - add optional ledger Detail field to Consent to Continue Out filing</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/business-filings-ui/pull/812">#812</a></td><td><a href="https://github.com/bcgov/entity/issues/33519">#33519</a></td><td>2026-06-10</td><td><a href="https://github.com/bcgov/business-filings-ui/commit/5279629">5279629</a></td></tr>
-</table>
 </pre>
 <hr>
 <!-- bcgov/business-create-ui -->
@@ -61,14 +55,9 @@ bcgov/business-create-ui
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#1063  ?         2026-06-15T18:45:47Z 33595 Amalg - foreign business validation tweaks (#869) 4ff9eed   mruff-aeq                                           
 #1062  prod      success  meawong          4ff9eed   2026-06-11 18:59:16   33595 Amalg - foreign busines 
-#1060  test      success  meawong          7c34255   2026-06-08 19:27:31   32780 - Remove Completing Par 
 
-
-<table border="1">
-  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
-  <tr><td>33595 Amalg - foreign business validation tweaks</td><td>@kialj876</td><td><a href="https://github.com/bcgov/business-create-ui/pull/869">#869</a></td><td><a href="https://github.com/bcgov/entity/issues/33595">#33595</a></td><td>2026-06-10</td><td><a href="https://github.com/bcgov/business-create-ui/commit/4ff9eed">4ff9eed</a></td></tr>
-</table>
 </pre>
 <hr>
 <!-- bcgov/business-edit-ui -->
@@ -231,7 +220,7 @@ Repo Versions
   </li>
   <li><strong>legal-api</strong>
     <ul>
-      <li>2.171.10</li>
+      <li>2.171.11</li>
     </ul>
   </li>
   <li><strong>queue_services/business-bn</strong>
