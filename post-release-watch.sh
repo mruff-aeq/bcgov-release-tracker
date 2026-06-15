@@ -160,9 +160,34 @@ html_escape() {
 # API. CLONE_STATE is "" (not yet attempted), "ok", or "fail". The clone is
 # blobless + no-checkout: it pulls commits and trees (enough for name-only
 # diffs) but no file contents and no working tree — a couple MB, about a second.
+#
+# IN_DIRS_CLONE_DIR (optional env var): a directory where the clone of $REPO
+# lives or should be created, OWNED BY THE CALLER. When a wrapper runs this
+# script many times against the same monorepo — one invocation per child dir,
+# e.g. the release-report output scripts looping over bcgov/lear's
+# queue_services/* — it can clone that large repo ONCE into a shared dir and
+# export IN_DIRS_CLONE_DIR so every invocation reuses it instead of re-cloning.
+# Contract: the dir is scoped to a single $REPO by the caller (we don't verify),
+# the first invocation populates it, the rest reuse it, and the caller removes
+# it afterwards (we never delete a caller-provided dir). When the var is unset
+# we fall back to a private mktemp clone that this process removes on exit.
 CLONE_DIR=""; CLONE_STATE=""
 ensure_clone() {
   [ -n "$CLONE_STATE" ] && { [ "$CLONE_STATE" = ok ]; return; }
+  if [ -n "${IN_DIRS_CLONE_DIR:-}" ]; then
+    CLONE_DIR="$IN_DIRS_CLONE_DIR"
+    # Already populated by an earlier invocation sharing this dir? Reuse it.
+    if git -C "$CLONE_DIR" rev-parse --git-dir >/dev/null 2>&1; then
+      CLONE_STATE=ok; return 0
+    fi
+    mkdir -p "$CLONE_DIR"
+    if git clone --quiet --filter=blob:none --no-checkout "https://github.com/$REPO.git" "$CLONE_DIR" 2>/dev/null; then
+      CLONE_STATE=ok; return 0
+    fi
+    CLONE_STATE=fail
+    echo "in-dirs: git clone of $REPO into $CLONE_DIR failed — IN-DIRS column will show ERR." >&2
+    return 1
+  fi
   CLONE_DIR=$(mktemp -d)
   trap 'rm -rf "$CLONE_DIR"' EXIT
   if git clone --quiet --filter=blob:none --no-checkout "https://github.com/$REPO.git" "$CLONE_DIR" 2>/dev/null; then
