@@ -169,10 +169,29 @@ DEPLOYS_JSON=$(api "/repos/$REPO/deployments?per_page=100") || DEPLOYS_JSON='[]'
 # A run's deployment shares its SHA and is created a few seconds later, so we
 # pick the earliest deployment with the same 7-char SHA at/after the run start.
 # ISO-8601 'Z' timestamps compare correctly as plain strings.
-get_env() {  # get_env <full-sha> <created_at>
-  printf '%s' "$DEPLOYS_JSON" | jq -r --arg sha "${1:0:7}" --arg t "$2" '
+get_env() {  # get_env <full-sha> <created_at> [deep]
+  local sha="$1" t="$2" deep="${3:-0}" env
+  env=$(printf '%s' "$DEPLOYS_JSON" | jq -r --arg sha "${sha:0:7}" --arg t "$t" '
     [ .[] | select((.sha[0:7]) == $sha and .created_at >= $t) ]
-    | sort_by(.created_at) | (.[0].environment // "?")'
+    | sort_by(.created_at) | (.[0].environment // "?")')
+  # The recent-deployments cache is the latest 100 deployments repo-wide. On a
+  # busy monorepo like bcgov/lear that only spans a couple of weeks, so a run
+  # that deployed longer ago than that window isn't in it and resolves to "?".
+  # When deep=1 (used only for the few rows the table actually prints, not the
+  # 50-run test-bounding scan), fall back to a query filtered by this run's FULL
+  # commit SHA — the deployments ?sha= filter needs the full SHA, not a prefix —
+  # which returns that commit's deployments regardless of age. Costs at most one
+  # extra API call per printed row, and only when the cache couldn't resolve it.
+  if [ "$env" = "?" ] && [ "$deep" = "1" ]; then
+    local by_sha
+    by_sha=$(api "/repos/$REPO/deployments?sha=$sha&per_page=100") || by_sha=""
+    if [ -n "$by_sha" ]; then
+      env=$(printf '%s' "$by_sha" | jq -r --arg t "$t" '
+        [ .[] | select(.created_at >= $t) ]
+        | sort_by(.created_at) | (.[0].environment // "?")')
+    fi
+  fi
+  printf '%s' "$env"
 }
 
 # Minimal HTML escaping for table cell text (&, <, > only — no CSS, no quotes-in-attrs).
@@ -267,7 +286,7 @@ done < <(printf '%s' "$RUNS_JSON" | jq -r --argjson n "$COUNT" '
 
 for line in "${rows[@]}"; do
   IFS=$'\t' read -r num sha concl created actor msg <<< "$line"
-  env=$(get_env "$sha" "$created")
+  env=$(get_env "$sha" "$created" 1)
   sha7="${sha:0:7}"
   created="${created%Z}"; created="${created/T/ }"
   msg=$(printf '%s' "$msg" | cut -c1-29)
