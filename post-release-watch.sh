@@ -128,13 +128,37 @@ AUTH_HEADER=()
 _TOKEN="${GH_TOKEN:-${GITHUB_TOKEN:-}}"
 [ -n "$_TOKEN" ] && AUTH_HEADER=(-H "Authorization: Bearer $_TOKEN")
 
-api() {  # api <path-or-full-url> ; prints body, returns curl's exit status
-  local url="$1"
+# Number of attempts for a single API call. Overridable via the environment.
+API_RETRIES="${API_RETRIES:-5}"
+
+api() {  # api <path-or-full-url> ; prints body on success, returns nonzero on failure
+  local url="$1" attempt code tmp
   case "$url" in http*) ;; *) url="$API$url" ;; esac
-  curl -fsSL "${AUTH_HEADER[@]}" \
-    -H "Accept: application/vnd.github+json" \
-    -H "X-GitHub-Api-Version: 2022-11-28" \
-    "$url"
+  tmp=$(mktemp)
+  # Retry only TRANSIENT failures (rate limit / 5xx / network) so a single
+  # hiccup on the deployments or runs fetch doesn't blank a whole table's ENV
+  # column to "?". A hard 4xx like 404 is not retried (retrying won't help).
+  # We keep the body off stderr and emit 'error: CODE' only when we give up —
+  # the report workflow greps stderr for 'error: 403' / 'error: 429' to fail
+  # loudly (red X) instead of committing a degraded all-"?" report, so that
+  # exact text is preserved for the rate-limit codes.
+  for attempt in $(seq 1 "$API_RETRIES"); do
+    code=$(curl -sSL -o "$tmp" -w '%{http_code}' "${AUTH_HEADER[@]}" \
+      -H "Accept: application/vnd.github+json" \
+      -H "X-GitHub-Api-Version: 2022-11-28" \
+      "$url" 2>/dev/null)
+    if [ "$code" = "200" ]; then
+      cat "$tmp"; rm -f "$tmp"; return 0
+    fi
+    case "$code" in
+      403|429|500|502|503|504|000)
+        [ "$attempt" -lt "$API_RETRIES" ] && sleep "$(( attempt < 5 ? attempt : 5 ))" ;;
+      *) break ;;
+    esac
+  done
+  rm -f "$tmp"
+  echo "error: $code (GET $url)" >&2
+  return 1
 }
 
 # Fetch the repo's recent deployments once; reused to resolve every run's env.
@@ -236,9 +260,9 @@ done < <(printf '%s' "$RUNS_JSON" | jq -r --argjson n "$COUNT" '
   .workflow_runs[:$n][] |
   [ (.run_number|tostring),
     .head_sha,
-    (.conclusion // ""),
+    (.conclusion // .status // "?"),
     .created_at,
-    (.actor.login // ""),
+    (.actor.login // "-"),
     ((.head_commit.message // "") | split("\n")[0]) ] | @tsv')
 
 for line in "${rows[@]}"; do
