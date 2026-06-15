@@ -274,7 +274,11 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
         break
       fi
     fi
-  done < <(printf '%s' "$RUNS_JSON" | jq -r '.workflow_runs[] | [ (.run_number|tostring), .head_sha, .created_at ] | @tsv')
+  # Here-string (not process substitution): jq runs to completion and its output
+  # is captured BEFORE the loop, so the early `break` above can't close the pipe
+  # under jq and leave it writing into a dead reader ("jq: writing output failed:
+  # Broken pipe"). The fetched run list is tiny, so buffering it is free.
+  done <<< "$(printf '%s' "$RUNS_JSON" | jq -r '.workflow_runs[] | [ (.run_number|tostring), .head_sha, .created_at ] | @tsv')"
 
   if [ -z "$START_SHA" ]; then
     echo "test-release: no 'test' deploy found in the recent runs of $WORKFLOW — nothing to report." >&2
@@ -329,14 +333,16 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
     [ "$HTML" -ne 1 ] && printf '%-42.41s %-20.20s %-7s %-9s %-12s %-9s\n' "$ptitle" "$pauthor" "$pnum" "$pticket" "$pdate" "$psha"
     pr_rows+=("$pnum"$'\t'"$pticket"$'\t'"$psha"$'\t'"$pdate"$'\t'"$pauthor"$'\t'"$ptitle"$'\t'"$changed")
     shown=$((shown + 1))
-  done < <(printf '%s' "$PRS_JSON" | jq -r '
+  # Here-string (not process substitution) so the early `break` above can't
+  # SIGPIPE jq mid-write ("Broken pipe"); jq finishes into the captured string.
+  done <<< "$(printf '%s' "$PRS_JSON" | jq -r '
     [ .[] | select(.merged_at != null) ] | sort_by(.merged_at) | reverse | .[] |
     [ ("#" + (.number|tostring)),
       ((.body // "") | [scan("/bcgov/entity#([0-9]+)")] | if length>0 then "#"+.[0][0] else "NA" end),
       ((.merge_commit_sha // "")[0:7]),
       (.merged_at[0:10]),
       .user.login,
-      .title ] | @tsv')
+      .title ] | @tsv')"
 
   if [ "$in_scope" -eq 0 ]; then
     echo "post-release: warning — latest test commit $START_SHA (run #$START_RUN) not found in the last" >&2

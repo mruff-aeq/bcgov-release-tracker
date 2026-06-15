@@ -1,18 +1,76 @@
 echo "<h1>Pre-Release Report (PRs to be pushed into TEST)</h1>"
 echo "<p>Generated: $(TZ='America/Vancouver' date '+%A, %B %-d, %Y at %-I:%M %p %Z')</p>"
 
-# bcgov/lear is a monorepo whose queue_services/* child dirs (excluding common)
-# are each deployed by their own CD workflow. We list one table per child dir,
-# filtered with --in-dirs=queue_services/<child> so each table denotes only the
-# PRs that actually changed that component. --in-dirs reads changed files from a
-# blobless git clone of lear (not the API), so these tables add no per-PR API
-# calls — lear being first in the list, the clone work happens up front.
+# bcgov/lear (whole repo)
+echo "<!-- bcgov/lear -->"
+echo "<h2>"
+echo "bcgov/lear"
+echo "</h2>"
+echo "<pre>"
+./pre-release-watch.sh 2 business-bn-cd.yml bcgov/lear test-release --html
+echo "</pre>"
+echo "<hr>"
+
+# bcgov/business-filings-ui
+echo "<!-- bcgov/business-filings-ui -->"
+echo "<h2>"
+echo "bcgov/business-filings-ui"
+echo "</h2>"
+echo "<pre>"
+./pre-release-watch.sh 2 cd.yml bcgov/business-filings-ui test-release --html
+echo "</pre>"
+echo "<hr>"
+
+# bcgov/business-create-ui
+echo "<!-- bcgov/business-create-ui -->"
+echo "<h2>"
+echo "bcgov/business-create-ui"
+echo "</h2>"
+echo "<pre>"
+./pre-release-watch.sh 2 cd.yml bcgov/business-create-ui test-release --html
+echo "</pre>"
+echo "<hr>"
+
+# bcgov/business-edit-ui
+echo "<!-- bcgov/business-edit-ui -->"
+echo "<h2>"
+echo "bcgov/business-edit-ui"
+echo "</h2>"
+echo "<pre>"
+./pre-release-watch.sh 2 cd.yml bcgov/business-edit-ui test-release --html
+echo "</pre>"
+echo "<hr>"
+
+# bcgov/business-dashboard-ui
+echo "<!-- bcgov/business-dashboard-ui -->"
+echo "<h2>"
+echo "bcgov/business-dashboard-ui"
+echo "</h2>"
+echo "<pre>"
+./pre-release-watch.sh 2 cd.yml bcgov/business-dashboard-ui test-release --html
+echo "</pre>"
+echo "<hr>"
+
+# bcgov/business-ui (web/business-registry-dashboard)
+echo "<!-- bcgov/business-ui web/business-registry-dashboard -->"
+echo "<h2>"
+echo "bcgov/business-ui (web/business-registry-dashboard)"
+echo "</h2>"
+echo "<pre>"
+./pre-release-watch.sh 2 business-registry-ui-cd.yaml bcgov/business-ui test-release --in-dirs=web/business-registry-dashboard --html
+echo "</pre>"
+echo "<hr>"
+
+# bcgov/lear queue_services — one table per child dir (excluding common), shown
+# last so the whole-lear table above keeps its original first position. Each is
+# deployed by its own CD workflow and filtered with --in-dirs=queue_services/
+# <child> so the table denotes only the PRs that changed that component.
 #
-# Clone lear ONCE and share it across all five queue_services tables via
-# IN_DIRS_CLONE_DIR (see ensure_clone in pre-release-watch.sh): the first table
-# populates this dir, the other four reuse it, and we remove it afterwards.
-# stdout is the report HTML, so mktemp's path is captured into the var (not
-# printed). If the clone can't be made each table just falls back to its own.
+# Clone lear ONCE and share it across all five tables via IN_DIRS_CLONE_DIR (see
+# ensure_clone in pre-release-watch.sh): the first table populates this dir, the
+# other four reuse it, and we remove it afterwards. stdout is the report HTML,
+# so mktemp's path is captured into the var (not printed). If the clone can't be
+# made each table just falls back to its own.
 LEAR_CLONE_DIR="$(mktemp -d)"
 export IN_DIRS_CLONE_DIR="$LEAR_CLONE_DIR"
 
@@ -66,60 +124,9 @@ echo "<pre>"
 echo "</pre>"
 echo "<hr>"
 
-# Done with lear's per-dir tables — drop the shared clone so later (non-lear)
-# repos fall back to their own --in-dirs clones as usual.
+# Done with lear's per-dir tables — drop the shared clone.
 unset IN_DIRS_CLONE_DIR
 rm -rf "$LEAR_CLONE_DIR"
-
-# bcgov/business-filings-ui
-echo "<!-- bcgov/business-filings-ui -->"
-echo "<h2>"
-echo "bcgov/business-filings-ui"
-echo "</h2>"
-echo "<pre>"
-./pre-release-watch.sh 2 cd.yml bcgov/business-filings-ui test-release --html
-echo "</pre>"
-echo "<hr>"
-
-# bcgov/business-create-ui
-echo "<!-- bcgov/business-create-ui -->"
-echo "<h2>"
-echo "bcgov/business-create-ui"
-echo "</h2>"
-echo "<pre>"
-./pre-release-watch.sh 2 cd.yml bcgov/business-create-ui test-release --html
-echo "</pre>"
-echo "<hr>"
-
-# bcgov/business-edit-ui
-echo "<!-- bcgov/business-edit-ui -->"
-echo "<h2>"
-echo "bcgov/business-edit-ui"
-echo "</h2>"
-echo "<pre>"
-./pre-release-watch.sh 2 cd.yml bcgov/business-edit-ui test-release --html
-echo "</pre>"
-echo "<hr>"
-
-# bcgov/business-dashboard-ui
-echo "<!-- bcgov/business-dashboard-ui -->"
-echo "<h2>"
-echo "bcgov/business-dashboard-ui"
-echo "</h2>"
-echo "<pre>"
-./pre-release-watch.sh 2 cd.yml bcgov/business-dashboard-ui test-release --html
-echo "</pre>"
-echo "<hr>"
-
-# bcgov/business-ui (web/business-registry-dashboard)
-echo "<!-- bcgov/business-ui web/business-registry-dashboard -->"
-echo "<h2>"
-echo "bcgov/business-ui (web/business-registry-dashboard)"
-echo "</h2>"
-echo "<pre>"
-./pre-release-watch.sh 2 business-registry-ui-cd.yaml bcgov/business-ui test-release --in-dirs=web/business-registry-dashboard --html
-echo "</pre>"
-echo "<hr>"
 
 # Repo Versions
 echo "<!-- repo versions -->"
