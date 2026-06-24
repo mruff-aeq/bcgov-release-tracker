@@ -7,7 +7,7 @@ echo "<h2>"
 echo "bcgov/lear"
 echo "</h2>"
 echo "<pre>"
-./pre-release-watch.sh 2 business-bn-cd.yml bcgov/lear test-release --html
+./pre-release-watch.sh 6 business-bn-cd.yml bcgov/lear test-release --html
 echo "</pre>"
 echo "<hr>"
 
@@ -17,7 +17,7 @@ echo "<h2>"
 echo "bcgov/business-filings-ui"
 echo "</h2>"
 echo "<pre>"
-./pre-release-watch.sh 2 cd.yml bcgov/business-filings-ui test-release --html
+./pre-release-watch.sh 6 cd.yml bcgov/business-filings-ui test-release --html
 echo "</pre>"
 echo "<hr>"
 
@@ -27,7 +27,7 @@ echo "<h2>"
 echo "bcgov/business-create-ui"
 echo "</h2>"
 echo "<pre>"
-./pre-release-watch.sh 2 cd.yml bcgov/business-create-ui test-release --html
+./pre-release-watch.sh 6 cd.yml bcgov/business-create-ui test-release --html
 echo "</pre>"
 echo "<hr>"
 
@@ -37,7 +37,7 @@ echo "<h2>"
 echo "bcgov/business-edit-ui"
 echo "</h2>"
 echo "<pre>"
-./pre-release-watch.sh 2 cd.yml bcgov/business-edit-ui test-release --html
+./pre-release-watch.sh 6 cd.yml bcgov/business-edit-ui test-release --html
 echo "</pre>"
 echo "<hr>"
 
@@ -47,7 +47,7 @@ echo "<h2>"
 echo "bcgov/business-dashboard-ui"
 echo "</h2>"
 echo "<pre>"
-./pre-release-watch.sh 2 cd.yml bcgov/business-dashboard-ui test-release --html
+./pre-release-watch.sh 6 cd.yml bcgov/business-dashboard-ui test-release --html
 echo "</pre>"
 echo "<hr>"
 
@@ -57,7 +57,7 @@ echo "<h2>"
 echo "bcgov/business-ui (web/business-registry-dashboard)"
 echo "</h2>"
 echo "<pre>"
-./pre-release-watch.sh 2 business-registry-ui-cd.yaml bcgov/business-ui test-release --in-dirs=web/business-registry-dashboard --html
+./pre-release-watch.sh 6 business-registry-ui-cd.yaml bcgov/business-ui test-release --in-dirs=web/business-registry-dashboard --html
 echo "</pre>"
 echo "<hr>"
 
@@ -80,7 +80,7 @@ echo "<h2>"
 echo "bcgov/lear (queue_services/business-bn)"
 echo "</h2>"
 echo "<pre>"
-./pre-release-watch.sh 2 business-bn-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-bn --html
+./pre-release-watch.sh 6 business-bn-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-bn --html
 echo "</pre>"
 echo "<hr>"
 
@@ -90,7 +90,7 @@ echo "<h2>"
 echo "bcgov/lear (queue_services/business-digital-credentials)"
 echo "</h2>"
 echo "<pre>"
-./pre-release-watch.sh 2 business-digital-credentials-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-digital-credentials --html
+./pre-release-watch.sh 6 business-digital-credentials-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-digital-credentials --html
 echo "</pre>"
 echo "<hr>"
 
@@ -100,7 +100,7 @@ echo "<h2>"
 echo "bcgov/lear (queue_services/business-emailer)"
 echo "</h2>"
 echo "<pre>"
-./pre-release-watch.sh 2 business-emailer-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-emailer --html
+./pre-release-watch.sh 6 business-emailer-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-emailer --html
 echo "</pre>"
 echo "<hr>"
 
@@ -110,7 +110,7 @@ echo "<h2>"
 echo "bcgov/lear (queue_services/business-filer)"
 echo "</h2>"
 echo "<pre>"
-./pre-release-watch.sh 2 business-filer-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-filer --html
+./pre-release-watch.sh 6 business-filer-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-filer --html
 echo "</pre>"
 echo "<hr>"
 
@@ -120,7 +120,7 @@ echo "<h2>"
 echo "bcgov/lear (queue_services/business-pay)"
 echo "</h2>"
 echo "<pre>"
-./pre-release-watch.sh 2 business-pay-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-pay --html
+./pre-release-watch.sh 6 business-pay-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-pay --html
 echo "</pre>"
 echo "<hr>"
 
