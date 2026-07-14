@@ -51,13 +51,13 @@ echo "<pre>"
 echo "</pre>"
 echo "<hr>"
 
-# bcgov/business-ui (web/business-registry-dashboard)
-echo "<!-- bcgov/business-ui web/business-registry-dashboard -->"
+# bcgov/business-ui
+echo "<!-- bcgov/business-ui -->"
 echo "<h2>"
-echo "bcgov/business-ui (web/business-registry-dashboard)"
+echo "bcgov/business-ui"
 echo "</h2>"
 echo "<pre>"
-./pre-release-watch.sh 6 business-registry-ui-cd.yaml bcgov/business-ui test-release --in-dirs=web/business-registry-dashboard --html
+./pre-release-watch.sh 6 business-registry-ui-cd.yaml bcgov/business-ui test-release --html
 echo "</pre>"
 echo "<hr>"
 
