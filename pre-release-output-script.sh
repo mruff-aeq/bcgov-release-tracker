@@ -7,7 +7,7 @@ echo "<h2>"
 echo "bcgov/lear"
 echo "</h2>"
 echo "<pre>"
-./pre-release-watch.sh 6 business-bn-cd.yml bcgov/lear test-release --html
+./pre-release-watch.sh 6 business-api-cd.yml bcgov/lear test-release --html
 echo "</pre>"
 echo "<hr>"
 
