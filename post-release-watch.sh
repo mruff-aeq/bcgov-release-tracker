@@ -143,7 +143,7 @@ api() {  # api <path-or-full-url> ; prints body on success, returns nonzero on f
   # loudly (red X) instead of committing a degraded all-"?" report, so that
   # exact text is preserved for the rate-limit codes.
   for attempt in $(seq 1 "$API_RETRIES"); do
-    code=$(curl -sSL -o "$tmp" -w '%{http_code}' "${AUTH_HEADER[@]}" \
+    code=$(curl -sSL -o "$tmp" -w '%{http_code}' ${AUTH_HEADER[@]+"${AUTH_HEADER[@]}"} \
       -H "Accept: application/vnd.github+json" \
       -H "X-GitHub-Api-Version: 2022-11-28" \
       "$url" 2>/dev/null)
