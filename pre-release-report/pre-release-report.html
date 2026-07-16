@@ -1,5 +1,5 @@
 <h1>Pre-Release Report (PRs to be pushed into TEST)</h1>
-<p>Generated: Thursday, July 16, 2026 at 10:13 AM PDT</p>
+<p>Generated: Thursday, July 16, 2026 at 12:07 PM PDT</p>
 <!-- bcgov/lear -->
 <h2>
 bcgov/lear
@@ -7,16 +7,18 @@ bcgov/lear
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#681   prod      success  mruff-aeq        d76efa7   2026-07-16 17:31:35   34037 add package data tool u 
 #680   test      success  kialj876         deecf50   2026-07-15 18:28:49   34201 - Point model deps to h 
 #678   sandbox   success  mruff-aeq        5a2a97a   2026-07-14 21:51:50   34121 move court order into s 
 #677   test      success  mruff-aeq        9232a7a   2026-07-14 19:24:22   Merge pull request #4572 from 
 #675   prod      success  meawong          d216916   2026-07-09 19:43:33   32961 emailer - update restor 
 #674   sandbox   success  meawong          124611d   2026-07-09 15:47:16   34080 - Remove Active CCO Val 
-#672   test      success  meawong          de7c52a   2026-07-08 16:15:49   34076 - Bump legal-api and em 
 
 
 <table border="1">
   <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
+  <tr><td>34121 update ref to use court order table</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/lear/pull/4573">#4573</a></td><td><a href="https://github.com/bcgov/entity/issues/34121">#34121</a></td><td>2026-07-16</td><td><a href="https://github.com/bcgov/lear/commit/f376ca4">f376ca4</a></td></tr>
+  <tr><td>33940 api completing party incorporation</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4570">#4570</a></td><td><a href="https://github.com/bcgov/entity/issues/33940">#33940</a></td><td>2026-07-16</td><td><a href="https://github.com/bcgov/lear/commit/ebfc503">ebfc503</a></td></tr>
   <tr><td>34037 add package data tool utilities</td><td>@Rajandeep98</td><td><a href="https://github.com/bcgov/lear/pull/4580">#4580</a></td><td><a href="https://github.com/bcgov/entity/issues/34037">#34037</a></td><td>2026-07-15</td><td><a href="https://github.com/bcgov/lear/commit/d76efa7">d76efa7</a></td></tr>
   <tr><td>34037 - Add Package for Utilities</td><td>@Rajandeep98</td><td><a href="https://github.com/bcgov/lear/pull/4579">#4579</a></td><td><a href="https://github.com/bcgov/entity/issues/34037">#34037</a></td><td>2026-07-15</td><td><a href="https://github.com/bcgov/lear/commit/13ac271">13ac271</a></td></tr>
   <tr><td>34199 Addition of delta restore script for tracking table dump</td><td>@argush3</td><td><a href="https://github.com/bcgov/lear/pull/4568">#4568</a></td><td><a href="https://github.com/bcgov/entity/issues/34199">#34199</a></td><td>2026-07-15</td><td><a href="https://github.com/bcgov/lear/commit/326b444">326b444</a></td></tr>
@@ -30,12 +32,12 @@ bcgov/business-filings-ui
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#1051  prod      success  mruff-aeq        6358a37   2026-07-16 17:34:43   34201 annual report - omit of 
 #1050  test      success  kialj876         6358a37   2026-07-15 18:30:20   34201 annual report - omit of 
 #1048  test      success  mruff-aeq        2e7f48b   2026-07-14 19:31:59   33815 - UI fixes for Consent  
 #1046  test      success  bolyachevets     0b7f6c5   2026-07-07 17:48:32   34057 court order certified b 
 #1045  dev       success  bolyachevets     0b7f6c5   2026-07-07 17:43:11   34057 court order certified b 
 #1044  prod      success  kialj876         0b7f6c5   2026-07-06 17:13:50   34057 court order certified b 
-#1043  test      success  kialj876         0b7f6c5   2026-07-03 17:51:07   34057 court order certified b 
 
 </pre>
 <hr>
@@ -123,7 +125,6 @@ RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSA
 #58    prod      success  mruff-aeq        8af6370   2026-06-04 19:03:53   33304 regenerate documents af 
 #55    test      success  mruff-aeq        70df86f   2026-06-01 20:40:37   Merge pull request #4449 from 
 
-No commits in IN-DIRS=queue_services/business-bn
 </pre>
 <hr>
 <!-- bcgov/lear queue_services/business-digital-credentials -->
@@ -140,7 +141,6 @@ RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSA
 #42    prod      success  loneil           ce06162   2026-05-06 19:46:20   Business Model: update schema 
 #41    test      success  loneil           2a344a8   2026-04-30 21:39:56   Update for 28.9 release (#434 
 
-No commits in IN-DIRS=queue_services/business-digital-credentials
 </pre>
 <hr>
 <!-- bcgov/lear queue_services/business-emailer -->
@@ -150,17 +150,18 @@ bcgov/lear (queue_services/business-emailer)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#113   prod      success  mruff-aeq        d76efa7   2026-07-16 17:32:04   34037 add package data tool u 
 #111   test      success  mruff-aeq        9232a7a   2026-07-14 19:26:51   Merge pull request #4572 from 
 #108   prod      success  meawong          d216916   2026-07-09 19:43:38   32961 emailer - update restor 
 #106   test      success  meawong          de7c52a   2026-07-08 16:15:54   34076 - Bump legal-api and em 
 #101   prod      success  kialj876         5ef80a8   2026-07-06 17:17:09   this job need to regularly ru 
 #99    test      success  kialj876         c070bf3   2026-07-02 16:47:47   32959 business emailer - alte 
-#98    dev       success  kialj876         c070bf3   2026-07-02 16:34:57   32959 business emailer - alte 
 
 
 these are the commits IN-DIRS=queue_services/business-emailer
 <table border="1">
   <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
+  <tr><td>34121 update ref to use court order table</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/lear/pull/4573">#4573</a></td><td><a href="https://github.com/bcgov/entity/issues/34121">#34121</a></td><td>2026-07-16</td><td><a href="https://github.com/bcgov/lear/commit/f376ca4">f376ca4</a></td></tr>
   <tr><td>32963-dissolution-email-templates</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4569">#4569</a></td><td><a href="https://github.com/bcgov/entity/issues/32963">#32963</a></td><td>2026-07-15</td><td><a href="https://github.com/bcgov/lear/commit/2e42182">2e42182</a></td></tr>
 </table>
 </pre>
@@ -179,7 +180,12 @@ RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSA
 #197   test      success  mruff-aeq        4396309   2026-06-15 20:20:38   Merge pull request #4494 from 
 #194   prod      success  kialj876         488b608   2026-06-12 18:23:31   33657 separate auth flow upda 
 
-No commits in IN-DIRS=queue_services/business-filer
+
+these are the commits IN-DIRS=queue_services/business-filer
+<table border="1">
+  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
+  <tr><td>34121 update ref to use court order table</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/lear/pull/4573">#4573</a></td><td><a href="https://github.com/bcgov/entity/issues/34121">#34121</a></td><td>2026-07-16</td><td><a href="https://github.com/bcgov/lear/commit/f376ca4">f376ca4</a></td></tr>
+</table>
 </pre>
 <hr>
 <!-- bcgov/lear queue_services/business-pay -->
@@ -235,22 +241,22 @@ Repo Versions
   </li>
   <li><strong>queue_services/business-bn</strong>
     <ul>
-      <li>0.1.5</li>
+      <li>0.1.6</li>
     </ul>
   </li>
   <li><strong>queue_services/business-digital-credentials</strong>
     <ul>
-      <li>0.2.0</li>
+      <li>0.2.1</li>
     </ul>
   </li>
   <li><strong>queue_services/business-emailer</strong>
     <ul>
-      <li>0.1.9</li>
+      <li>0.1.10</li>
     </ul>
   </li>
   <li><strong>queue_services/business-filer</strong>
     <ul>
-      <li>3.0.22</li>
+      <li>3.0.23</li>
     </ul>
   </li>
   <li><strong>queue_services/business-pay</strong>
