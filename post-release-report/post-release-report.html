@@ -1,5 +1,5 @@
 <h1>Post-Release Report (PRs that have been pushed into TEST this release cycle)</h1>
-<p>Generated: Thursday, July 16, 2026 at 4:23 PM PDT</p>
+<p>Generated: Thursday, July 16, 2026 at 5:58 PM PDT</p>
 <!-- bcgov/lear -->
 <h2>
 bcgov/lear
@@ -7,14 +7,25 @@ bcgov/lear
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#686   dev       success  bolyachevets     2ef1fc5   2026-07-17 00:50:07   update model to use database  
 #684   dev       success  bolyachevets     55f3140   2026-07-16 21:35:55   update db migration to use da 
 #681   prod      success  mruff-aeq        d76efa7   2026-07-16 17:31:35   34037 add package data tool u 
 #680   test      success  kialj876         deecf50   2026-07-15 18:28:49   34201 - Point model deps to h 
 #678   sandbox   success  mruff-aeq        5a2a97a   2026-07-14 21:51:50   34121 move court order into s 
 #677   test      success  mruff-aeq        9232a7a   2026-07-14 19:24:22   Merge pull request #4572 from 
-#675   prod      success  meawong          d216916   2026-07-09 19:43:33   32961 emailer - update restor 
 
 showing PRs between 9232a7a and deecf50
+
+<table border="1">
+  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
+  <tr><td>34201 - Point model deps to hotfix branch</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4577">#4577</a></td><td><a href="https://github.com/bcgov/entity/issues/34201">#34201</a></td><td>2026-07-15</td><td><a href="https://github.com/bcgov/lear/commit/deecf50">deecf50</a></td></tr>
+  <tr><td>34201 - update other legal-api deps with hotfix model dep</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4576">#4576</a></td><td><a href="https://github.com/bcgov/entity/issues/34201">#34201</a></td><td>2026-07-15</td><td><a href="https://github.com/bcgov/lear/commit/3ba5dec">3ba5dec</a></td></tr>
+  <tr><td>34201 update schema in hotfix branch</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4575">#4575</a></td><td><a href="https://github.com/bcgov/entity/issues/34201">#34201</a></td><td>2026-07-15</td><td><a href="https://github.com/bcgov/lear/commit/7fe6877">7fe6877</a></td></tr>
+  <tr><td>34201 schema update</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4574">#4574</a></td><td><a href="https://github.com/bcgov/entity/issues/34201">#34201</a></td><td>2026-07-15</td><td><a href="https://github.com/bcgov/lear/commit/ab63e41">ab63e41</a></td></tr>
+  <tr><td>32963-dissolution-email-templates</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4569">#4569</a></td><td><a href="https://github.com/bcgov/entity/issues/32963">#32963</a></td><td>2026-07-15</td><td><a href="https://github.com/bcgov/lear/commit/2e42182">2e42182</a></td></tr>
+  <tr><td>34121 move court order into separate table</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/lear/pull/4567">#4567</a></td><td><a href="https://github.com/bcgov/entity/issues/34121">#34121</a></td><td>2026-07-14</td><td><a href="https://github.com/bcgov/lear/commit/5a2a97a">5a2a97a</a></td></tr>
+  <tr><td>34222 - Dump with updated schema name</td><td>@Rajandeep98</td><td><a href="https://github.com/bcgov/lear/pull/4571">#4571</a></td><td><a href="https://github.com/bcgov/entity/issues/34222">#34222</a></td><td>2026-07-14</td><td><a href="https://github.com/bcgov/lear/commit/8559353">8559353</a></td></tr>
+</table>
 </pre>
 <hr>
 <!-- bcgov/business-filings-ui -->
@@ -24,13 +35,19 @@ bcgov/business-filings-ui
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
-#1051  ?         success  mruff-aeq        6358a37   2026-07-16 17:34:43   34201 annual report - omit of 
-#1050  ?         success  kialj876         6358a37   2026-07-15 18:30:20   34201 annual report - omit of 
-#1048  ?         success  mruff-aeq        2e7f48b   2026-07-14 19:31:59   33815 - UI fixes for Consent  
-#1046  ?         success  bolyachevets     0b7f6c5   2026-07-07 17:48:32   34057 court order certified b 
-#1045  ?         success  bolyachevets     0b7f6c5   2026-07-07 17:43:11   34057 court order certified b 
-#1044  ?         success  kialj876         0b7f6c5   2026-07-06 17:13:50   34057 court order certified b 
+#1051  prod      success  mruff-aeq        6358a37   2026-07-16 17:34:43   34201 annual report - omit of 
+#1050  test      success  kialj876         6358a37   2026-07-15 18:30:20   34201 annual report - omit of 
+#1048  test      success  mruff-aeq        2e7f48b   2026-07-14 19:31:59   33815 - UI fixes for Consent  
+#1046  test      success  bolyachevets     0b7f6c5   2026-07-07 17:48:32   34057 court order certified b 
+#1045  dev       success  bolyachevets     0b7f6c5   2026-07-07 17:43:11   34057 court order certified b 
+#1044  prod      success  kialj876         0b7f6c5   2026-07-06 17:13:50   34057 court order certified b 
 
+showing PRs between 2e7f48b and 6358a37
+
+<table border="1">
+  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
+  <tr><td>34201 annual report - omit offices and directors for corps</td><td>@kialj876</td><td><a href="https://github.com/bcgov/business-filings-ui/pull/820">#820</a></td><td><a href="https://github.com/bcgov/entity/issues/34201">#34201</a></td><td>2026-07-15</td><td><a href="https://github.com/bcgov/business-filings-ui/commit/6358a37">6358a37</a></td></tr>
+</table>
 </pre>
 <hr>
 <!-- bcgov/business-create-ui -->
@@ -40,13 +57,14 @@ bcgov/business-create-ui
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
-#1074  ?         success  bolyachevets     9a1b02d   2026-07-07 17:58:12   Merge pull request #875 from  
-#1073  ?         success  bolyachevets     9a1b02d   2026-07-07 17:50:35   Merge pull request #875 from  
-#1072  ?         success  kialj876         9a1b02d   2026-07-06 17:12:56   Merge pull request #875 from  
-#1071  ?         success  kialj876         9a1b02d   2026-07-02 14:43:22   Merge pull request #875 from  
-#1068  ?         success  kialj876         d23bd60   2026-06-24 10:35:50   32585 - Continuation In Wordi 
-#1065  ?         success  mruff-aeq        3f0bd1a   2026-06-18 17:40:34   33785 - Fix Foreign Amalgamat 
+#1074  test      success  bolyachevets     9a1b02d   2026-07-07 17:58:12   Merge pull request #875 from  
+#1073  dev       success  bolyachevets     9a1b02d   2026-07-07 17:50:35   Merge pull request #875 from  
+#1072  prod      success  kialj876         9a1b02d   2026-07-06 17:12:56   Merge pull request #875 from  
+#1071  test      success  kialj876         9a1b02d   2026-07-02 14:43:22   Merge pull request #875 from  
+#1068  test      success  kialj876         d23bd60   2026-06-24 10:35:50   32585 - Continuation In Wordi 
+#1065  prod      success  mruff-aeq        3f0bd1a   2026-06-18 17:40:34   33785 - Fix Foreign Amalgamat 
 
+showing PRs between 9a1b02d and 9a1b02d
 </pre>
 <hr>
 <!-- bcgov/business-edit-ui -->
@@ -56,13 +74,19 @@ bcgov/business-edit-ui
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
-#970   ?         success  meawong          dc47711   2026-07-09 19:43:42   34134 hot fix - remove certif 
-#969   ?         success  meawong          dc47711   2026-07-09 15:34:55   34134 hot fix - remove certif 
-#967   ?         success  meawong          5538916   2026-07-08 16:16:37   Merge pull request #701 from  
-#966   ?         success  bolyachevets     5538916   2026-07-07 17:58:32   Merge pull request #701 from  
-#965   ?         success  bolyachevets     5538916   2026-07-07 17:51:15   Merge pull request #701 from  
-#964   ?         success  kialj876         5538916   2026-07-06 17:13:29   Merge pull request #701 from  
+#970   prod      success  meawong          dc47711   2026-07-09 19:43:42   34134 hot fix - remove certif 
+#969   test      success  meawong          dc47711   2026-07-09 15:34:55   34134 hot fix - remove certif 
+#967   test      success  meawong          5538916   2026-07-08 16:16:37   Merge pull request #701 from  
+#966   test      success  bolyachevets     5538916   2026-07-07 17:58:32   Merge pull request #701 from  
+#965   dev       success  bolyachevets     5538916   2026-07-07 17:51:15   Merge pull request #701 from  
+#964   prod      success  kialj876         5538916   2026-07-06 17:13:29   Merge pull request #701 from  
 
+showing PRs between 5538916 and dc47711
+
+<table border="1">
+  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
+  <tr><td>34134 hot fix - remove certifiedBy empty string from submission</td><td>@kialj876</td><td><a href="https://github.com/bcgov/business-edit-ui/pull/703">#703</a></td><td><a href="https://github.com/bcgov/entity/issues/34134">#34134</a></td><td>2026-07-09</td><td><a href="https://github.com/bcgov/business-edit-ui/commit/dc47711">dc47711</a></td></tr>
+</table>
 </pre>
 <hr>
 <!-- bcgov/business-dashboard-ui -->
@@ -72,13 +96,14 @@ bcgov/business-dashboard-ui
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
-#492   ?         success  meawong          0b482a5   2026-07-09 19:43:46   Merge pull request #282 from  
-#491   ?         success  meawong          0b482a5   2026-07-08 16:16:43   Merge pull request #282 from  
-#490   ?         success  bolyachevets     0b482a5   2026-07-07 18:10:05   Merge pull request #282 from  
-#489   ?         success  bolyachevets     0b482a5   2026-07-07 17:59:12   Merge pull request #282 from  
-#487   ?         success  kialj876         e9d9c82   2026-07-06 17:14:12   34029-registrars-notation-cer 
-#486   ?         success  kialj876         e9d9c82   2026-07-02 14:46:09   34029-registrars-notation-cer 
+#492   prod      success  meawong          0b482a5   2026-07-09 19:43:46   Merge pull request #282 from  
+#491   test      success  meawong          0b482a5   2026-07-08 16:16:43   Merge pull request #282 from  
+#490   test      success  bolyachevets     0b482a5   2026-07-07 18:10:05   Merge pull request #282 from  
+#489   dev       success  bolyachevets     0b482a5   2026-07-07 17:59:12   Merge pull request #282 from  
+#487   prod      success  kialj876         e9d9c82   2026-07-06 17:14:12   34029-registrars-notation-cer 
+#486   test      success  kialj876         e9d9c82   2026-07-02 14:46:09   34029-registrars-notation-cer 
 
+showing PRs between 0b482a5 and 0b482a5
 </pre>
 <hr>
 <!-- bcgov/business-ui web/business-registry-dashboard -->
@@ -88,13 +113,20 @@ bcgov/business-ui (web/business-registry-dashboard)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
-#292   ?         success  kialj876         d0b514f   2026-07-06 17:18:27   34023 - fix layer typecheck ( 
-#291   ?         success  deetz99          233946e   2026-06-30 21:55:38   33293 - add dynamic text to a 
-#289   ?         success  deetz99          ffa3656   2026-06-24 16:24:04   update connect-pay, add page  
-#287   ?         success  loneil           bf604df   2026-05-28 20:30:41   33422 - affiliation success m 
-#286   ?         success  deetz99          bf604df   2026-05-27 21:25:36   33422 - affiliation success m 
-#284   ?         success  eve-git          60cb2e3   2026-05-27 20:31:19   Merge pull request #480 from  
+#292   prod      success  kialj876         d0b514f   2026-07-06 17:18:27   34023 - fix layer typecheck ( 
+#291   test      success  deetz99          233946e   2026-06-30 21:55:38   33293 - add dynamic text to a 
+#289   test      success  deetz99          ffa3656   2026-06-24 16:24:04   update connect-pay, add page  
+#287   prod      success  loneil           bf604df   2026-05-28 20:30:41   33422 - affiliation success m 
+#286   test      success  deetz99          bf604df   2026-05-27 21:25:36   33422 - affiliation success m 
+#284   dev       success  eve-git          60cb2e3   2026-05-27 20:31:19   Merge pull request #480 from  
 
+showing PRs between ffa3656 and 233946e
+
+these are the commits IN-DIRS=web/business-registry-dashboard
+<table border="1">
+  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
+  <tr><td>33293 - add dynamic text to affiliation modal</td><td>@deetz99</td><td><a href="https://github.com/bcgov/business-ui/pull/507">#507</a></td><td><a href="https://github.com/bcgov/entity/issues/33293">#33293</a></td><td>2026-06-30</td><td><a href="https://github.com/bcgov/business-ui/commit/233946e">233946e</a></td></tr>
+</table>
 </pre>
 <hr>
 <!-- bcgov/lear queue_services/business-bn -->
@@ -104,12 +136,12 @@ bcgov/lear (queue_services/business-bn)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
-#64    ?         success  mruff-aeq        76a8ad5   2026-06-18 17:41:17   33562 - Add Unfreeze Logic an 
-#63    ?         success  mruff-aeq        4396309   2026-06-15 20:17:59   Merge pull request #4494 from 
-#62    ?         success  meawong          a5e8511   2026-06-11 19:00:04   33696 legal api - business su 
-#60    ?         success  meawong          912c838   2026-06-08 19:34:19   33687 - Update business api a 
-#58    ?         success  mruff-aeq        8af6370   2026-06-04 19:03:53   33304 regenerate documents af 
-#55    ?         success  mruff-aeq        70df86f   2026-06-01 20:40:37   Merge pull request #4449 from 
+#64    prod      success  mruff-aeq        76a8ad5   2026-06-18 17:41:17   33562 - Add Unfreeze Logic an 
+#63    test      success  mruff-aeq        4396309   2026-06-15 20:17:59   Merge pull request #4494 from 
+#62    prod      success  meawong          a5e8511   2026-06-11 19:00:04   33696 legal api - business su 
+#60    test      success  meawong          912c838   2026-06-08 19:34:19   33687 - Update business api a 
+#58    prod      success  mruff-aeq        8af6370   2026-06-04 19:03:53   33304 regenerate documents af 
+#55    test      success  mruff-aeq        70df86f   2026-06-01 20:40:37   Merge pull request #4449 from 
 
 </pre>
 <hr>
@@ -120,12 +152,12 @@ bcgov/lear (queue_services/business-digital-credentials)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
-#50    ?         success  mruff-aeq        76a8ad5   2026-06-18 17:42:43   33562 - Add Unfreeze Logic an 
-#49    ?         success  mruff-aeq        4396309   2026-06-15 20:19:24   Merge pull request #4494 from 
-#48    ?         success  meawong          a5e8511   2026-06-11 19:00:08   33696 legal api - business su 
-#46    ?         success  meawong          912c838   2026-06-08 19:34:35   33687 - Update business api a 
-#42    ?         success  loneil           ce06162   2026-05-06 19:46:20   Business Model: update schema 
-#41    ?         success  loneil           2a344a8   2026-04-30 21:39:56   Update for 28.9 release (#434 
+#50    prod      success  mruff-aeq        76a8ad5   2026-06-18 17:42:43   33562 - Add Unfreeze Logic an 
+#49    test      success  mruff-aeq        4396309   2026-06-15 20:19:24   Merge pull request #4494 from 
+#48    prod      success  meawong          a5e8511   2026-06-11 19:00:08   33696 legal api - business su 
+#46    test      success  meawong          912c838   2026-06-08 19:34:35   33687 - Update business api a 
+#42    prod      success  loneil           ce06162   2026-05-06 19:46:20   Business Model: update schema 
+#41    test      success  loneil           2a344a8   2026-04-30 21:39:56   Update for 28.9 release (#434 
 
 </pre>
 <hr>
@@ -136,13 +168,22 @@ bcgov/lear (queue_services/business-emailer)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
-#113   ?         success  mruff-aeq        d76efa7   2026-07-16 17:32:04   34037 add package data tool u 
-#111   ?         success  mruff-aeq        9232a7a   2026-07-14 19:26:51   Merge pull request #4572 from 
-#108   ?         success  meawong          d216916   2026-07-09 19:43:38   32961 emailer - update restor 
-#106   ?         success  meawong          de7c52a   2026-07-08 16:15:54   34076 - Bump legal-api and em 
-#101   ?         success  kialj876         5ef80a8   2026-07-06 17:17:09   this job need to regularly ru 
-#99    ?         success  kialj876         c070bf3   2026-07-02 16:47:47   32959 business emailer - alte 
+#113   prod      success  mruff-aeq        d76efa7   2026-07-16 17:32:04   34037 add package data tool u 
+#111   test      success  mruff-aeq        9232a7a   2026-07-14 19:26:51   Merge pull request #4572 from 
+#108   prod      success  meawong          d216916   2026-07-09 19:43:38   32961 emailer - update restor 
+#106   test      success  meawong          de7c52a   2026-07-08 16:15:54   34076 - Bump legal-api and em 
+#101   prod      success  kialj876         5ef80a8   2026-07-06 17:17:09   this job need to regularly ru 
+#99    test      success  kialj876         c070bf3   2026-07-02 16:47:47   32959 business emailer - alte 
 
+showing PRs between de7c52a and 9232a7a
+
+these are the commits IN-DIRS=queue_services/business-emailer
+<table border="1">
+  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
+  <tr><td>34219-bump-legal-api-emailer-versions</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4572">#4572</a></td><td><a href="https://github.com/bcgov/entity/issues/34219">#34219</a></td><td>2026-07-14</td><td><a href="https://github.com/bcgov/lear/commit/9232a7a">9232a7a</a></td></tr>
+  <tr><td>32962 Emailer - correction updates</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4563">#4563</a></td><td><a href="https://github.com/bcgov/entity/issues/32962">#32962</a></td><td>2026-07-10</td><td><a href="https://github.com/bcgov/lear/commit/34078b9">34078b9</a></td></tr>
+  <tr><td>32961 emailer - update restoration emails</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4560">#4560</a></td><td><a href="https://github.com/bcgov/entity/issues/32961">#32961</a></td><td>2026-07-09</td><td><a href="https://github.com/bcgov/lear/commit/d216916">d216916</a></td></tr>
+</table>
 </pre>
 <hr>
 <!-- bcgov/lear queue_services/business-filer -->
@@ -152,13 +193,20 @@ bcgov/lear (queue_services/business-filer)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
-#205   ?         success  kialj876         5ef80a8   2026-07-06 17:38:59   this job need to regularly ru 
-#204   ?         success  kialj876         67ea83a   2026-07-03 19:24:53   33588 - Add Initial Extract ( 
-#201   ?         success  kialj876         469f49d   2026-06-24 16:28:36   33936 legal-api, business fil 
-#198   ?         success  mruff-aeq        76a8ad5   2026-06-18 17:44:11   33562 - Add Unfreeze Logic an 
-#197   ?         success  mruff-aeq        4396309   2026-06-15 20:20:38   Merge pull request #4494 from 
-#194   ?         success  kialj876         488b608   2026-06-12 18:23:31   33657 separate auth flow upda 
+#205   prod      success  kialj876         5ef80a8   2026-07-06 17:38:59   this job need to regularly ru 
+#204   test      success  kialj876         67ea83a   2026-07-03 19:24:53   33588 - Add Initial Extract ( 
+#201   test      success  kialj876         469f49d   2026-06-24 16:28:36   33936 legal-api, business fil 
+#198   prod      success  mruff-aeq        76a8ad5   2026-06-18 17:44:11   33562 - Add Unfreeze Logic an 
+#197   test      success  mruff-aeq        4396309   2026-06-15 20:20:38   Merge pull request #4494 from 
+#194   prod      success  kialj876         488b608   2026-06-12 18:23:31   33657 separate auth flow upda 
 
+showing PRs between 469f49d and 67ea83a
+
+these are the commits IN-DIRS=queue_services/business-filer
+<table border="1">
+  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
+  <tr><td>33872 API/Filer - apply comment_type</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4544">#4544</a></td><td><a href="https://github.com/bcgov/entity/issues/33872">#33872</a></td><td>2026-06-30</td><td><a href="https://github.com/bcgov/lear/commit/32fb710">32fb710</a></td></tr>
+</table>
 </pre>
 <hr>
 <!-- bcgov/lear queue_services/business-pay -->
@@ -168,12 +216,12 @@ bcgov/lear (queue_services/business-pay)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
-#56    ?         success  loneil           ce06162   2026-05-06 19:51:14   Business Model: update schema 
-#55    ?         success  loneil           2a344a8   2026-04-30 21:40:04   Update for 28.9 release (#434 
-#47    ?         success  vysakh-menon-aot dd6eb4b   2026-03-09 22:11:01   32567 32565 business filer li 
-#46    ?         success  vysakh-menon-aot d844169   2026-03-05 00:00:46   Remove CoD effective date val 
-#45    ?         success  meawong          0791b7c   2026-03-03 20:02:02   32594 - Update Emailer to Ret 
-#44    ?         success  meawong          7d8d5f7   2026-02-26 19:09:45   32462 - Bump Legal-API versio 
+#56    prod      success  loneil           ce06162   2026-05-06 19:51:14   Business Model: update schema 
+#55    test      success  loneil           2a344a8   2026-04-30 21:40:04   Update for 28.9 release (#434 
+#47    sandbox   success  vysakh-menon-aot dd6eb4b   2026-03-09 22:11:01   32567 32565 business filer li 
+#46    sandbox   success  vysakh-menon-aot d844169   2026-03-05 00:00:46   Remove CoD effective date val 
+#45    prod      success  meawong          0791b7c   2026-03-03 20:02:02   32594 - Update Emailer to Ret 
+#44    test      success  meawong          7d8d5f7   2026-02-26 19:09:45   32462 - Bump Legal-API versio 
 
 </pre>
 <hr>
