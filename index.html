@@ -92,6 +92,7 @@
                    border-radius: 999px; vertical-align: middle; white-space: nowrap;
                    font: 600 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
                    background: #dafbe1; color: #116329; border: 1px solid #aceebb; }
+      .test-line { background: #dafbe1; color: #116329; font-weight: 600; }
     `;
     (doc.head || doc.documentElement).appendChild(style);
     // Section = an <h2> plus its siblings up to the next <hr>. The run log
@@ -111,7 +112,7 @@
         while ((m = runLine.exec(pre.textContent)) !== null)
           if (!latest || m[1] > latest) latest = m[1];
       }
-      sections.push({ h2, nodes, latest });
+      sections.push({ h2, nodes, pre, latest });
     }
     const globalLatest = sections.reduce(
       (a, s) => (s.latest && (!a || s.latest > a) ? s.latest : a), null);
@@ -140,6 +141,21 @@
         chip.className = "test-chip";
         chip.textContent = "latest test push · " + s.latest;
         s.h2.appendChild(chip);
+        // Highlight the run-log line that carries this latest test push:
+        // find it in the <pre>'s text node and wrap just that line.
+        const lineRe = new RegExp("^#\\d+\\s{2,}test\\s{2,}.*" + s.latest + ".*$", "m");
+        for (const node of [...s.pre.childNodes]) {
+          if (node.nodeType !== Node.TEXT_NODE) continue;
+          const m = node.textContent.match(lineRe);
+          if (!m) continue;
+          node.splitText(m.index + m[0].length);
+          const mid = node.splitText(m.index);
+          const mark = doc.createElement("span");
+          mark.className = "test-line";
+          mark.textContent = mid.textContent;
+          s.pre.replaceChild(mark, mid);
+          break;
+        }
       } else {
         for (const n of s.nodes) n.classList.add("stale-section");
       }
