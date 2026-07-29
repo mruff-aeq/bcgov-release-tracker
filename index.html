@@ -111,6 +111,24 @@
     return sections;
   }
 
+  // Wrap the first run-log line matching `re` in a green .test-line span
+  // (run logs are newest-first, so the first `test` match is the latest
+  // test push).
+  function markTestLine(doc, pre, re) {
+    for (const node of [...pre.childNodes]) {
+      if (node.nodeType !== Node.TEXT_NODE) continue;
+      const m = node.textContent.match(re);
+      if (!m) continue;
+      node.splitText(m.index + m[0].length);
+      const mid = node.splitText(m.index);
+      const mark = doc.createElement("span");
+      mark.className = "test-line";
+      mark.textContent = mid.textContent;
+      pre.replaceChild(mark, mid);
+      return;
+    }
+  }
+
   // Pre-release: the reader's question is "what is queued for the next
   // test push?" — pill each repo heading with its pending-PR count and
   // dim sections with an empty queue. Repo Versions / Repo CD have no
@@ -121,6 +139,8 @@
     for (const s of reportSections(doc)) {
       const table = s.pre && s.pre.querySelector("table");
       if (!table) continue;
+      // Latest test push = the baseline the pending list is diffed from.
+      markTestLine(doc, s.pre, /^#\d+\s{2,}test\s{2,}.*$/m);
       const count = Math.max(0, table.querySelectorAll("tr").length - 1);
       if (count > 0) {
         const chip = doc.createElement("span");
@@ -176,21 +196,8 @@
         chip.className = "test-chip";
         chip.textContent = "latest test push · " + s.latest;
         s.h2.appendChild(chip);
-        // Highlight the run-log line that carries this latest test push:
-        // find it in the <pre>'s text node and wrap just that line.
-        const lineRe = new RegExp("^#\\d+\\s{2,}test\\s{2,}.*" + s.latest + ".*$", "m");
-        for (const node of [...s.pre.childNodes]) {
-          if (node.nodeType !== Node.TEXT_NODE) continue;
-          const m = node.textContent.match(lineRe);
-          if (!m) continue;
-          node.splitText(m.index + m[0].length);
-          const mid = node.splitText(m.index);
-          const mark = doc.createElement("span");
-          mark.className = "test-line";
-          mark.textContent = mid.textContent;
-          s.pre.replaceChild(mark, mid);
-          break;
-        }
+        // Highlight the run-log line that carries this latest test push.
+        markTestLine(doc, s.pre, new RegExp("^#\\d+\\s{2,}test\\s{2,}.*" + s.latest + ".*$", "m"));
       } else {
         for (const n of s.nodes) n.classList.add("stale-section");
       }
