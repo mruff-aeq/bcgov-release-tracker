@@ -111,6 +111,33 @@
     return sections;
   }
 
+  // Bullet-list names for a section heading:
+  //   "bcgov/lear (queue_services/business-bn)" -> queue_services/business-bn
+  //   "bcgov/business-ui (web/business-registry-dashboard)"
+  //                                 -> business-registry-dashboard
+  //   "bcgov/lear"                  -> legal-api (the main lear service)
+  //   "bcgov/<name>"                -> <name>
+  function bulletKeysFor(h2text) {
+    const m = h2text.trim().match(/^bcgov\/(\S+)(?:\s+\((.+)\))?$/);
+    if (!m) return [];
+    if (m[2]) return [m[2], m[2].split("/").pop()];
+    return m[1] === "lear" ? ["legal-api"] : [m[1]];
+  }
+
+  // Append a green pill after each Repo Versions / Repo CD bullet whose
+  // name is in `labels` (Map of bullet name -> pill text); those are the
+  // only li>strong nodes in the reports.
+  function pillBullets(doc, labels) {
+    for (const strong of doc.querySelectorAll("li > strong")) {
+      const text = labels.get(strong.textContent.trim());
+      if (!text) continue;
+      const chip = doc.createElement("span");
+      chip.className = "test-chip";
+      chip.textContent = text;
+      strong.insertAdjacentElement("afterend", chip);
+    }
+  }
+
   // Wrap the first run-log line matching `re` in a green .test-line span
   // (run logs are newest-first, so the first `test` match is the latest
   // test push).
@@ -136,6 +163,7 @@
   function decoratePre() {
     const doc = PAGES.pre.frame.contentDocument;
     if (!doc || !doc.body || !injectFreshnessStyle(doc)) return;
+    const bulletLabels = new Map();
     for (const s of reportSections(doc)) {
       const table = s.pre && s.pre.querySelector("table");
       if (!table) continue;
@@ -143,14 +171,17 @@
       markTestLine(doc, s.pre, /^#\d+\s{2,}test\s{2,}.*$/m);
       const count = Math.max(0, table.querySelectorAll("tr").length - 1);
       if (count > 0) {
+        const label = count + (count === 1 ? " PR pending" : " PRs pending");
+        for (const k of bulletKeysFor(s.h2.textContent)) bulletLabels.set(k, label);
         const chip = doc.createElement("span");
         chip.className = "test-chip";
-        chip.textContent = count + (count === 1 ? " PR pending" : " PRs pending");
+        chip.textContent = label;
         s.h2.appendChild(chip);
       } else {
         for (const n of s.nodes) n.classList.add("stale-section");
       }
     }
+    pillBullets(doc, bulletLabels);
   }
 
   function decoratePost() {
@@ -175,26 +206,15 @@
     // Green pill or nothing: current-cycle sections get the pill, older
     // ones only dim. Sections with no run log at all (Repo Versions,
     // Repo CD) are not repo deployments — leave them untouched.
-    // greenKeys collects bullet-list names for the pilled sections:
-    //   "bcgov/lear (queue_services/business-bn)" -> queue_services/business-bn
-    //   "bcgov/business-ui (web/business-registry-dashboard)"
-    //                                 -> business-registry-dashboard
-    //   "bcgov/lear"                  -> legal-api (the main lear service)
-    //   "bcgov/<name>"                -> <name>
-    const greenKeys = new Set();
-    const keysFor = (h2text) => {
-      const m = h2text.trim().match(/^bcgov\/(\S+)(?:\s+\((.+)\))?$/);
-      if (!m) return [];
-      if (m[2]) return [m[2], m[2].split("/").pop()];
-      return m[1] === "lear" ? ["legal-api"] : [m[1]];
-    };
+    const bulletLabels = new Map();
     for (const s of sections) {
       if (!s.latest) continue;
       if (s.latest === globalLatest) {
-        for (const k of keysFor(s.h2.textContent)) greenKeys.add(k);
+        const label = "latest test push · " + s.latest;
+        for (const k of bulletKeysFor(s.h2.textContent)) bulletLabels.set(k, label);
         const chip = doc.createElement("span");
         chip.className = "test-chip";
-        chip.textContent = "latest test push · " + s.latest;
+        chip.textContent = label;
         s.h2.appendChild(chip);
         // Highlight the run-log line that carries this latest test push.
         markTestLine(doc, s.pre, new RegExp("^#\\d+\\s{2,}test\\s{2,}.*" + s.latest + ".*$", "m"));
@@ -202,15 +222,7 @@
         for (const n of s.nodes) n.classList.add("stale-section");
       }
     }
-    // Mirror the pills onto the matching Repo Versions / Repo CD bullets
-    // (the only li>strong nodes in the document).
-    for (const strong of doc.querySelectorAll("li > strong")) {
-      if (!greenKeys.has(strong.textContent.trim())) continue;
-      const chip = doc.createElement("span");
-      chip.className = "test-chip";
-      chip.textContent = "latest test push · " + globalLatest;
-      strong.insertAdjacentElement("afterend", chip);
-    }
+    pillBullets(doc, bulletLabels);
   }
   PAGES.post.frame.addEventListener("load", decoratePost);
   if (PAGES.post.frame.contentDocument?.readyState === "complete") decoratePost();
