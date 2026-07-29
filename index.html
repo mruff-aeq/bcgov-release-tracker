@@ -150,7 +150,7 @@
       if (!greenKeys.has(strong.textContent.trim())) continue;
       const chip = doc.createElement("span");
       chip.className = "test-chip";
-      chip.textContent = "latest";
+      chip.textContent = "latest test push · " + globalLatest;
       strong.insertAdjacentElement("afterend", chip);
     }
   }
