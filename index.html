@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BC Gov Release Reports</title>
+<style>
+  :root {
+    --bg: #f6f8fa; --fg: #1f2328; --border: #d1d9e0;
+    --tab-bg: #ffffff; --tab-active: #0969da; --tab-active-fg: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117; --fg: #e6edf3; --border: #30363d;
+      --tab-bg: #161b22; --tab-active: #1f6feb; --tab-active-fg: #ffffff;
+    }
+  }
+  * { margin: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    display: flex; flex-direction: column;
+    background: var(--bg); color: var(--fg);
+    font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+    background: var(--tab-bg); flex-wrap: wrap;
+  }
+  header h1 { font-size: 15px; font-weight: 600; margin-right: 12px; }
+  .tab {
+    padding: 6px 14px; border: 1px solid var(--border); border-radius: 999px;
+    background: transparent; color: var(--fg); font-size: 13px; font-weight: 500;
+    cursor: pointer; text-decoration: none;
+  }
+  .tab[aria-selected="true"] {
+    background: var(--tab-active); border-color: var(--tab-active);
+    color: var(--tab-active-fg);
+  }
+  .spacer { flex: 1; }
+  .raw { font-size: 12px; color: var(--tab-active); text-decoration: none; }
+  .raw:hover { text-decoration: underline; }
+  main { flex: 1; min-height: 0; }
+  iframe { width: 100%; height: 100%; border: 0; display: none; background: #fff; }
+  @media (prefers-color-scheme: dark) { iframe { background: #0d1117; } }
+  iframe.active { display: block; }
+</style>
+</head>
+<body>
+<header>
+  <h1>BC Gov Release Reports</h1>
+  <button class="tab" id="tab-pre"  aria-selected="true">Pre-release</button>
+  <button class="tab" id="tab-post" aria-selected="false">Post-release</button>
+  <span class="spacer"></span>
+  <a class="raw" id="raw-link" href="pre-release-report/pre-release-report.html" target="_blank" rel="noopener">open report in its own tab &#8599;</a>
+</header>
+<main>
+  <iframe id="frame-pre"  class="active" src="pre-release-report/pre-release-report.html"  title="Pre-release report"></iframe>
+  <iframe id="frame-post" loading="lazy" src="post-release-report/post-release-report.html" title="Post-release report"></iframe>
+</main>
+<script>
+  const PAGES = {
+    pre:  { tab: document.getElementById("tab-pre"),  frame: document.getElementById("frame-pre"),
+            href: "pre-release-report/pre-release-report.html" },
+    post: { tab: document.getElementById("tab-post"), frame: document.getElementById("frame-post"),
+            href: "post-release-report/post-release-report.html" },
+  };
+  const raw = document.getElementById("raw-link");
+  function show(which) {
+    for (const [key, p] of Object.entries(PAGES)) {
+      const on = key === which;
+      p.tab.setAttribute("aria-selected", on);
+      p.frame.classList.toggle("active", on);
+    }
+    raw.href = PAGES[which].href;
+    history.replaceState(null, "", "#" + which);
+    try { localStorage.setItem("release-report-tab", which); } catch {}
+  }
+  PAGES.pre.tab.addEventListener("click", () => show("pre"));
+  PAGES.post.tab.addEventListener("click", () => show("post"));
+  const fromHash = location.hash.replace("#", "");
+  let saved = null;
+  try { saved = localStorage.getItem("release-report-tab"); } catch {}
+  show(PAGES[fromHash] ? fromHash : PAGES[saved] ? saved : "pre");
+</script>
+</body>
+</html>
