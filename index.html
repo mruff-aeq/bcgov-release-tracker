@@ -119,9 +119,23 @@
     // Green pill or nothing: current-cycle sections get the pill, older
     // ones only dim. Sections with no run log at all (Repo Versions,
     // Repo CD) are not repo deployments — leave them untouched.
+    // greenKeys collects bullet-list names for the pilled sections:
+    //   "bcgov/lear (queue_services/business-bn)" -> queue_services/business-bn
+    //   "bcgov/business-ui (web/business-registry-dashboard)"
+    //                                 -> business-registry-dashboard
+    //   "bcgov/lear"                  -> legal-api (the main lear service)
+    //   "bcgov/<name>"                -> <name>
+    const greenKeys = new Set();
+    const keysFor = (h2text) => {
+      const m = h2text.trim().match(/^bcgov\/(\S+)(?:\s+\((.+)\))?$/);
+      if (!m) return [];
+      if (m[2]) return [m[2], m[2].split("/").pop()];
+      return m[1] === "lear" ? ["legal-api"] : [m[1]];
+    };
     for (const s of sections) {
       if (!s.latest) continue;
       if (s.latest === globalLatest) {
+        for (const k of keysFor(s.h2.textContent)) greenKeys.add(k);
         const chip = doc.createElement("span");
         chip.className = "test-chip";
         chip.textContent = "latest test push · " + s.latest;
@@ -129,6 +143,15 @@
       } else {
         for (const n of s.nodes) n.classList.add("stale-section");
       }
+    }
+    // Mirror the pills onto the matching Repo Versions / Repo CD bullets
+    // (the only li>strong nodes in the document).
+    for (const strong of doc.querySelectorAll("li > strong")) {
+      if (!greenKeys.has(strong.textContent.trim())) continue;
+      const chip = doc.createElement("span");
+      chip.className = "test-chip";
+      chip.textContent = "latest";
+      strong.insertAdjacentElement("afterend", chip);
     }
   }
   PAGES.post.frame.addEventListener("load", decoratePost);
