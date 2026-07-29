@@ -165,11 +165,13 @@
     if (!doc || !doc.body || !injectFreshnessStyle(doc)) return;
     const bulletLabels = new Map();
     for (const s of reportSections(doc)) {
-      const table = s.pre && s.pre.querySelector("table");
-      if (!table) continue;
+      if (!s.pre) continue;
       // Latest test push = the baseline the pending list is diffed from.
       markTestLine(doc, s.pre, /^#\d+\s{2,}test\s{2,}.*$/m);
-      const count = Math.max(0, table.querySelectorAll("tr").length - 1);
+      // "No commits in IN-DIRS=…" sections have no table at all — that is
+      // an empty queue too, so they dim like a zero-row table.
+      const table = s.pre.querySelector("table");
+      const count = table ? Math.max(0, table.querySelectorAll("tr").length - 1) : 0;
       if (count > 0) {
         const label = count + (count === 1 ? " PR pending" : " PRs pending");
         for (const k of bulletKeysFor(s.h2.textContent)) bulletLabels.set(k, label);
