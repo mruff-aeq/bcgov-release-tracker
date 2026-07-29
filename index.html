@@ -205,6 +205,12 @@
     const globalLatest = sections.reduce(
       (a, s) => (s.latest && (!a || s.latest > a) ? s.latest : a), null);
     if (!globalLatest) return;
+    // Anchor the page title to the concrete date the pills refer to:
+    // "… pushed into TEST this release cycle" becomes
+    // "… pushed into TEST this (2026-07-20) release cycle".
+    const h1 = doc.querySelector("h1");
+    if (h1 && !h1.textContent.includes(globalLatest))
+      h1.textContent = h1.textContent.replace(/\bthis\b/, "this (" + globalLatest + ")");
     // Green pill or nothing: current-cycle sections get the pill, older
     // ones only dim. Sections with no run log at all (Repo Versions,
     // Repo CD) are not repo deployments — leave them untouched.
