@@ -75,6 +75,65 @@
   }
   PAGES.pre.tab.addEventListener("click", () => show("pre"));
   PAGES.post.tab.addEventListener("click", () => show("post"));
+
+  // Post-release freshness: each repo section's run log lists deployments;
+  // find the newest `test` push date per section, then dim every section
+  // whose latest test push is older than the report-wide latest, so the
+  // reader's eye lands on the repos that are part of the current cycle.
+  // Same-origin iframe (same Pages host), so the DOM is reachable.
+  function decoratePost() {
+    const doc = PAGES.post.frame.contentDocument;
+    if (!doc || !doc.body || doc.getElementById("freshness-style")) return;
+    const style = doc.createElement("style");
+    style.id = "freshness-style";
+    style.textContent = `
+      .stale-section { opacity: 0.4; filter: grayscale(60%); }
+      .stale-section:hover { opacity: 0.85; filter: none; }
+      .test-chip { display: inline-block; margin-left: 10px; padding: 2px 10px;
+                   border-radius: 999px; vertical-align: middle; white-space: nowrap;
+                   font: 600 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .test-chip.latest { background: #dafbe1; color: #116329; border: 1px solid #aceebb; }
+      .test-chip.stale  { background: #eff1f3; color: #59636e; border: 1px solid #d1d9e0; }
+    `;
+    (doc.head || doc.documentElement).appendChild(style);
+    // Section = an <h2> plus its siblings up to the next <hr>. The run log
+    // pads columns with 2+ spaces, so `#N  test  ...  YYYY-MM-DD` can't
+    // false-match PR-table text.
+    const runLine = /^#\d+\s{2,}test\s{2,}.*?(\d{4}-\d{2}-\d{2})/gm;
+    const sections = [];
+    for (const h2 of doc.querySelectorAll("h2")) {
+      const nodes = [h2];
+      let pre = null;
+      for (let n = h2.nextSibling; n && !(n.nodeType === 1 && n.tagName === "HR"); n = n.nextSibling) {
+        if (n.nodeType === 1) { nodes.push(n); if (n.tagName === "PRE") pre = n; }
+      }
+      let latest = null, m;
+      if (pre) {
+        runLine.lastIndex = 0;
+        while ((m = runLine.exec(pre.textContent)) !== null)
+          if (!latest || m[1] > latest) latest = m[1];
+      }
+      sections.push({ h2, nodes, latest });
+    }
+    const globalLatest = sections.reduce(
+      (a, s) => (s.latest && (!a || s.latest > a) ? s.latest : a), null);
+    if (!globalLatest) return;
+    for (const s of sections) {
+      const chip = doc.createElement("span");
+      chip.className = "test-chip";
+      if (s.latest === globalLatest) {
+        chip.classList.add("latest");
+        chip.textContent = "latest test push · " + s.latest;
+      } else {
+        chip.classList.add("stale");
+        chip.textContent = s.latest ? "older — test " + s.latest : "no test push";
+        for (const n of s.nodes) n.classList.add("stale-section");
+      }
+      s.h2.appendChild(chip);
+    }
+  }
+  PAGES.post.frame.addEventListener("load", decoratePost);
+  if (PAGES.post.frame.contentDocument?.readyState === "complete") decoratePost();
   const fromHash = location.hash.replace("#", "");
   let saved = null;
   try { saved = localStorage.getItem("release-report-tab"); } catch {}
