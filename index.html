@@ -81,9 +81,8 @@
   // whose latest test push is older than the report-wide latest, so the
   // reader's eye lands on the repos that are part of the current cycle.
   // Same-origin iframe (same Pages host), so the DOM is reachable.
-  function decoratePost() {
-    const doc = PAGES.post.frame.contentDocument;
-    if (!doc || !doc.body || doc.getElementById("freshness-style")) return;
+  function injectFreshnessStyle(doc) {
+    if (doc.getElementById("freshness-style")) return false;
     const style = doc.createElement("style");
     style.id = "freshness-style";
     style.textContent = `
@@ -95,10 +94,11 @@
       .test-line { background: #dafbe1; color: #116329; font-weight: 600; }
     `;
     (doc.head || doc.documentElement).appendChild(style);
-    // Section = an <h2> plus its siblings up to the next <hr>. The run log
-    // pads columns with 2+ spaces, so `#N  test  ...  YYYY-MM-DD` can't
-    // false-match PR-table text.
-    const runLine = /^#\d+\s{2,}test\s{2,}.*?(\d{4}-\d{2}-\d{2})/gm;
+    return true;
+  }
+
+  // Section = an <h2> plus its siblings up to the next <hr>.
+  function reportSections(doc) {
     const sections = [];
     for (const h2 of doc.querySelectorAll("h2")) {
       const nodes = [h2];
@@ -106,13 +106,48 @@
       for (let n = h2.nextSibling; n && !(n.nodeType === 1 && n.tagName === "HR"); n = n.nextSibling) {
         if (n.nodeType === 1) { nodes.push(n); if (n.tagName === "PRE") pre = n; }
       }
-      let latest = null, m;
-      if (pre) {
-        runLine.lastIndex = 0;
-        while ((m = runLine.exec(pre.textContent)) !== null)
-          if (!latest || m[1] > latest) latest = m[1];
+      sections.push({ h2, nodes, pre });
+    }
+    return sections;
+  }
+
+  // Pre-release: the reader's question is "what is queued for the next
+  // test push?" — pill each repo heading with its pending-PR count and
+  // dim sections with an empty queue. Repo Versions / Repo CD have no
+  // <pre>, so they never participate.
+  function decoratePre() {
+    const doc = PAGES.pre.frame.contentDocument;
+    if (!doc || !doc.body || !injectFreshnessStyle(doc)) return;
+    for (const s of reportSections(doc)) {
+      const table = s.pre && s.pre.querySelector("table");
+      if (!table) continue;
+      const count = Math.max(0, table.querySelectorAll("tr").length - 1);
+      if (count > 0) {
+        const chip = doc.createElement("span");
+        chip.className = "test-chip";
+        chip.textContent = count + (count === 1 ? " PR pending" : " PRs pending");
+        s.h2.appendChild(chip);
+      } else {
+        for (const n of s.nodes) n.classList.add("stale-section");
       }
-      sections.push({ h2, nodes, pre, latest });
+    }
+  }
+
+  function decoratePost() {
+    const doc = PAGES.post.frame.contentDocument;
+    if (!doc || !doc.body || !injectFreshnessStyle(doc)) return;
+    // The run log pads columns with 2+ spaces, so `#N  test  ...
+    // YYYY-MM-DD` can't false-match PR-table text.
+    const runLine = /^#\d+\s{2,}test\s{2,}.*?(\d{4}-\d{2}-\d{2})/gm;
+    const sections = reportSections(doc);
+    for (const s of sections) {
+      let m;
+      s.latest = null;
+      if (s.pre) {
+        runLine.lastIndex = 0;
+        while ((m = runLine.exec(s.pre.textContent)) !== null)
+          if (!s.latest || m[1] > s.latest) s.latest = m[1];
+      }
     }
     const globalLatest = sections.reduce(
       (a, s) => (s.latest && (!a || s.latest > a) ? s.latest : a), null);
@@ -172,6 +207,8 @@
   }
   PAGES.post.frame.addEventListener("load", decoratePost);
   if (PAGES.post.frame.contentDocument?.readyState === "complete") decoratePost();
+  PAGES.pre.frame.addEventListener("load", decoratePre);
+  if (PAGES.pre.frame.contentDocument?.readyState === "complete") decoratePre();
   const fromHash = location.hash.replace("#", "");
   let saved = null;
   try { saved = localStorage.getItem("release-report-tab"); } catch {}
