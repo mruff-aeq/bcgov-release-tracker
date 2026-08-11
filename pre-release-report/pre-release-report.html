@@ -1,5 +1,5 @@
 <h1>Pre-Release Report (PRs to be pushed into TEST)</h1>
-<p>Generated: Tuesday, August 11, 2026 at 10:42 AM PDT</p>
+<p>Generated: Tuesday, August 11, 2026 at 10:57 AM PDT</p>
 <!-- bcgov/lear -->
 <h2>
 bcgov/lear
@@ -22,7 +22,7 @@ RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSA
   <tr><td>34465 Colin API - auth info endpoint</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4687">#4687</a></td><td><a href="https://github.com/bcgov/entity/issues/34465">#34465</a></td><td>2026-08-10</td><td><a href="https://github.com/bcgov/lear/commit/357b20a">357b20a</a></td></tr>
   <tr><td>34457 - Distinct DRS report types for coop annual report bundled outputs</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4689">#4689</a></td><td><a href="https://github.com/bcgov/entity/issues/34457">#34457</a></td><td>2026-08-10</td><td><a href="https://github.com/bcgov/lear/commit/fa42d11">fa42d11</a></td></tr>
   <tr><td>34481 validation for newLegalType and resolutionDates (new format)</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/lear/pull/4683">#4683</a></td><td><a href="https://github.com/bcgov/entity/issues/34481">#34481</a></td><td>2026-08-10</td><td><a href="https://github.com/bcgov/lear/commit/a3d597f">a3d597f</a></td></tr>
-  <tr><td>34354 - Change BCA to Business Corporations Act in common statement (Notice of Articles)</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4688">#4688</a></td><td>NA</td><td>2026-08-10</td><td><a href="https://github.com/bcgov/lear/commit/81c49b3">81c49b3</a></td></tr>
+  <tr><td>34354 - Change BCA to Business Corporations Act in common statement (Notice of Articles)</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4688">#4688</a></td><td><a href="https://github.com/bcgov/entity/issues/34354">#34354</a></td><td>2026-08-10</td><td><a href="https://github.com/bcgov/lear/commit/81c49b3">81c49b3</a></td></tr>
   <tr><td>bump version after model merge</td><td>@benjamin-bc-gov</td><td><a href="https://github.com/bcgov/lear/pull/4679">#4679</a></td><td><a href="https://github.com/bcgov/entity/issues/32906">#32906</a></td><td>2026-08-07</td><td><a href="https://github.com/bcgov/lear/commit/4839f62">4839f62</a></td></tr>
 </table>
 </pre>
@@ -116,14 +116,23 @@ bcgov/business-ui (web/business-registry-dashboard)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
-#292   prod      success  kialj876         d0b514f   2026-07-06 17:18:27   34023 - fix layer typecheck ( 
-#291   test      success  deetz99          233946e   2026-06-30 21:55:38   33293 - add dynamic text to a 
-#289   test      success  deetz99          ffa3656   2026-06-24 16:24:04   update connect-pay, add page  
-#287   prod      success  loneil           bf604df   2026-05-28 20:30:41   33422 - affiliation success m 
-#286   test      success  deetz99          bf604df   2026-05-27 21:25:36   33422 - affiliation success m 
-#284   dev       success  eve-git          60cb2e3   2026-05-27 20:31:19   Merge pull request #480 from  
+#278   prod      success  loneil           8b15d95   2026-05-06 19:55:14   33208 - always check affiliat 
+#276   test      success  deetz99          9a44813   2026-05-04 17:15:14   switch account in acceptToken 
+#274   prod      success  meawong          fbef8cc   2026-04-23 21:03:17   revert middlware change (#453 
+#262   prod      success  meawong          337423c   2026-03-03 20:07:23   chore: update versions (#411) 
+#261   test      success  meawong          a3688b4   2026-02-26 19:03:41   chore: update versions (#407) 
+#259   test      success  severinbeauvais  454e14f   2026-02-25 18:29:53   chore: update versions (#405) 
 
-No commits in IN-DIRS=web/business-registry-dashboard
+
+these are the commits IN-DIRS=web/business-registry-dashboard
+<table border="1">
+  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
+  <tr><td>33293 - add dynamic text to affiliation modal</td><td>@deetz99</td><td><a href="https://github.com/bcgov/business-ui/pull/507">#507</a></td><td><a href="https://github.com/bcgov/entity/issues/33293">#33293</a></td><td>2026-06-30</td><td><a href="https://github.com/bcgov/business-ui/commit/233946e">233946e</a></td></tr>
+  <tr><td>33707 - remove manage business button from success modal</td><td>@deetz99</td><td><a href="https://github.com/bcgov/business-ui/pull/501">#501</a></td><td><a href="https://github.com/bcgov/entity/issues/33707">#33707</a></td><td>2026-06-24</td><td><a href="https://github.com/bcgov/business-ui/commit/f8d9e06">f8d9e06</a></td></tr>
+  <tr><td>33422 - affiliation success modal text</td><td>@deetz99</td><td><a href="https://github.com/bcgov/business-ui/pull/479">#479</a></td><td><a href="https://github.com/bcgov/entity/issues/33422">#33422</a></td><td>2026-05-27</td><td><a href="https://github.com/bcgov/business-ui/commit/bf604df">bf604df</a></td></tr>
+  <tr><td>33219 return after redirect</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/business-ui/pull/465">#465</a></td><td><a href="https://github.com/bcgov/entity/issues/33219">#33219</a></td><td>2026-05-13</td><td><a href="https://github.com/bcgov/business-ui/commit/3be2edf">3be2edf</a></td></tr>
+  <tr><td>33208 - always check affiliations on unaffiliated token error</td><td>@deetz99</td><td><a href="https://github.com/bcgov/business-ui/pull/458">#458</a></td><td><a href="https://github.com/bcgov/entity/issues/33208">#33208</a></td><td>2026-05-05</td><td><a href="https://github.com/bcgov/business-ui/commit/8b15d95">8b15d95</a></td></tr>
+</table>
 </pre>
 <hr>
 <!-- bcgov/lear queue_services/business-bn -->
