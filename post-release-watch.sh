@@ -347,7 +347,7 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
   fi
 
   # Pull recent closed PRs, keep the merged ones, newest-merged first. TICKET
-  # comes from the PR body line "*Issue #:* /bcgov/entity#NNNNN"; NA if absent.
+  # comes from a PR-body ref like "bcgov/entity#NNNNN" or ".../entity/issues/NNNNN"; NA if absent.
   # Full title is carried for the HTML table; the text table truncates with %.41s.
   PRS_JSON=$(api "/repos/$REPO/pulls?state=closed&per_page=100&sort=updated&direction=desc") || PRS_JSON='[]'
 
@@ -381,7 +381,7 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
   done <<< "$(printf '%s' "$PRS_JSON" | jq -r '
     [ .[] | select(.merged_at != null) ] | sort_by(.merged_at) | reverse | .[] |
     [ ("#" + (.number|tostring)),
-      ((.body // "") | [scan("/bcgov/entity#([0-9]+)")] | if length>0 then "#"+.[0][0] else "NA" end),
+      ((.body // "") | [scan("bcgov/entity(?:#|/issues/)([0-9]+)")] | if length>0 then "#"+.[0][0] else "NA" end),
       ((.merge_commit_sha // "")[0:7]),
       (.merged_at[0:10]),
       .user.login,
