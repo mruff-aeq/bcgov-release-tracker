@@ -26,6 +26,8 @@
     background: var(--tab-bg); flex-wrap: wrap;
   }
   header h1 { font-size: 15px; font-weight: 600; margin-right: 12px; }
+  header h1 a { color: inherit; text-decoration: none; }
+  header h1 a:hover { text-decoration: underline; }
   .tab {
     padding: 6px 14px; border: 1px solid var(--border); border-radius: 999px;
     background: transparent; color: var(--fg); font-size: 13px; font-weight: 500;
@@ -45,7 +47,7 @@
 </head>
 <body>
 <header>
-  <h1>BC Gov Release Reports</h1>
+  <h1><a href="https://github.com/mruff-aeq/bcgov-release-tracker" target="_blank" rel="noopener">BC Gov Release Reports</a></h1>
   <button class="tab" id="tab-pre"  aria-selected="true">Pre-release</button>
   <button class="tab" id="tab-post" aria-selected="false">Post-release</button>
   <span class="spacer"></span>
