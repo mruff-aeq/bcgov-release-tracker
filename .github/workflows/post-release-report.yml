@@ -41,6 +41,8 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p post-release-report
+          # Keep the previous report so the freshness check below can compare.
+          cp post-release-report/post-release-report.html /tmp/prev-report.html 2>/dev/null || true
           # stdout -> the HTML file; stderr -> a log we inspect for throttling.
           bash post-release-output-script.sh 2>/tmp/report.err \
             | tee post-release-report/post-release-report.html
@@ -50,6 +52,14 @@ jobs:
           # failed, so we don't overwrite a good report with a degraded one.
           if grep -qE 'error: (403|429)|failed to fetch runs' /tmp/report.err; then
             echo "::error::GitHub API throttled or a runs fetch failed — not committing this report."
+            exit 1
+          fi
+          # Bail if any repo section's newest run number went BACKWARDS vs the
+          # previous report — GitHub's runs API occasionally returns an
+          # incomplete list, which shifts the release boundary into the past.
+          if [ -f /tmp/prev-report.html ] && \
+             ! bash report-freshness-check.sh /tmp/prev-report.html post-release-report/post-release-report.html; then
+            echo "::error::Stale run listing from the GitHub API — not committing this report."
             exit 1
           fi
 
