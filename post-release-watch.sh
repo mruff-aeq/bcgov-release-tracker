@@ -25,13 +25,20 @@
 # Two `test` deploys of this workflow must exist among the runs fetched (up to
 # 50) to bound the window; otherwise the script says so.
 #
-# --in-dirs=DIR[,DIR...] (requires `test-release`, else it errors) adds an extra
-# column to that second table: YES if the PR changed any file under DIR or one
-# of its child dirs, NO otherwise. Multiple dirs may be comma-separated; a PR
-# matching ANY of them is YES. Example dir for bcgov/business-ui:
+# That PR list is read from a local git clone of the repo, NOT the GitHub PR
+# API: every first-parent commit on the default branch is one merged PR (squash
+# or merge commit), so `git log PREV_TEST..LATEST_TEST` is the exact, complete
+# list — no 100-PR API window that can miss a bounding commit, no sort-by-
+# updated staleness. Columns are derived from the commit: PR number and title
+# from the subject, ticket from a bcgov/entity#N ref or the leading number of
+# the title ("34267 - ..."), author from the GitHub noreply email (login) or the
+# git author name.
+#
+# --in-dirs=DIR[,DIR...] (requires `test-release`, else it errors) limits that
+# second table to the PRs that changed any file under DIR or one of its child
+# dirs (a git pathspec on the log). Multiple dirs may be comma-separated; a PR
+# matching ANY of them is kept. Example dir for bcgov/business-ui:
 # web/business-registry-dashboard
-# This check is done from a local clone (see below), not the API, so it adds
-# no API calls regardless of how many PRs are in the window. Requires `git`.
 #
 # --html (requires `test-release`) suppresses the TEXT rendering of that second
 # (merged-PR) table and prints only its HTML version. The first table — the last
@@ -45,17 +52,17 @@
 #   post-release-watch 10 cd.yml bcgov/business-filings-ui test-release   # + PR table
 #   post-release-watch 10 cd.yml bcgov/business-ui test-release --in-dirs=web/business-registry-dashboard
 #
-# Requires: curl, jq (and git only when --in-dirs= is used). No authentication is
+# Requires: curl, jq, and git (for `test-release`). No authentication is
 # required (these bcgov repos are public), but an optional GH_TOKEN/GITHUB_TOKEN
 # is used if present — see the api() helper. Anonymous calls share a 60/hour-per-
-# IP cap; a token gets its own ~1000-5000/hour. This makes a FIXED 3 calls per
-# repo (deployments + runs + PR list), regardless of how many PRs are in the window.
-#
-# --in-dirs= adds NO API calls: instead of querying each PR's changed files via
-# the API, it does one blobless, no-checkout `git clone` of the repo (commits +
-# trees only, no file contents — ~1-2 MB, ~1 s) and reads each PR's changed
-# files locally from its merge commit. Git transport is not part of the REST
-# rate limit, so the per-PR cost is removed entirely.
+# IP cap; a token gets its own ~1000-5000/hour. This makes a FIXED 2 API calls
+# per repo (deployments + runs) — the deploy environment of a run exists only in
+# the GitHub Deployments/Actions API, so that part can't come from git — plus at
+# most one extra per printed row when a run's deployment is older than the
+# recent-deployments cache (see get_env). The PR list adds NO API calls: it does
+# one blobless, no-checkout `git clone` (commits + trees only, no file contents
+# — a few MB, a second or two) and reads the history locally. Git transport is
+# not part of the REST rate limit.
 #
 # How the deploy environment is resolved:
 #   - The deploy target is NOT exposed by the workflow-runs API. We instead read
@@ -113,9 +120,9 @@ REPO="${pos[2]:-bcgov/lear}"
 
 command -v curl >/dev/null 2>&1 || { echo "error: curl not found" >&2; exit 1; }
 command -v jq   >/dev/null 2>&1 || { echo "error: jq not found"   >&2; exit 1; }
-# --in-dirs= reads changed files from a local clone, so it needs git.
-if [ "$IN_DIRS" -eq 1 ]; then
-  command -v git >/dev/null 2>&1 || { echo "error: git not found (needed for --in-dirs=)" >&2; exit 1; }
+# The test-release PR table is read from a local clone, so it needs git.
+if [ "$TEST_RELEASE" -eq 1 ]; then
+  command -v git >/dev/null 2>&1 || { echo "error: git not found (needed for test-release)" >&2; exit 1; }
 fi
 
 # --- public GitHub REST API helper ------------------------------------------
@@ -199,64 +206,136 @@ html_escape() {
   printf '%s' "$1" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
 }
 
-# --in-dirs= reads each PR's changed files from a local clone instead of the
-# API. CLONE_STATE is "" (not yet attempted), "ok", or "fail". The clone is
-# blobless + no-checkout: it pulls commits and trees (enough for name-only
-# diffs) but no file contents and no working tree — a couple MB, about a second.
+# --- local clone of the repo (the PR list comes from git, not the API) --------
+# The merged-PR list is read from a local clone: every first-parent commit on the
+# default branch is one merged PR (squash or merge commit), so `git log` over a
+# commit range gives the exact list bounded by the deploy commits — no PR API,
+# no 100-item window that can miss the bounding commit, no sort-by-updated
+# staleness. Git transport is not part of the REST rate limit either.
 #
-# IN_DIRS_CLONE_DIR (optional env var): a directory where the clone of $REPO
-# lives or should be created, OWNED BY THE CALLER. When a wrapper runs this
-# script many times against the same monorepo — one invocation per child dir,
-# e.g. the release-report output scripts looping over bcgov/lear's
-# queue_services/* — it can clone that large repo ONCE into a shared dir and
-# export IN_DIRS_CLONE_DIR so every invocation reuses it instead of re-cloning.
-# Contract: the dir is scoped to a single $REPO by the caller (we don't verify),
-# the first invocation populates it, the rest reuse it, and the caller removes
-# it afterwards (we never delete a caller-provided dir). When the var is unset
-# we fall back to a private mktemp clone that this process removes on exit.
+# The clone is blobless + no-checkout: it pulls commits and trees (enough for
+# `--in-dirs` pathspec filtering) but no file contents and no working tree — a
+# couple MB, about a second. CLONE_STATE is "" (not yet attempted), "ok" or "fail".
+#
+# REPO_CLONE_DIR (optional env var): a directory where the clone of $REPO lives
+# or should be created, OWNED BY THE CALLER. When a wrapper runs this script
+# many times against the same monorepo — one invocation per child dir, e.g. the
+# release-report output scripts looping over bcgov/lear's queue_services/* — it
+# can clone that large repo ONCE into a shared dir and export REPO_CLONE_DIR so
+# every invocation reuses it instead of re-cloning. Contract: the dir is scoped
+# to a single $REPO by the caller (we don't verify), the first invocation
+# populates it, the rest reuse it as-is (no re-fetch — a report run is short), and the
+# caller removes it afterwards (we never delete a caller-provided dir). When the
+# var is unset we fall back to a private mktemp clone removed on exit.
 CLONE_DIR=""; CLONE_STATE=""
 ensure_clone() {
   [ -n "$CLONE_STATE" ] && { [ "$CLONE_STATE" = ok ]; return; }
-  if [ -n "${IN_DIRS_CLONE_DIR:-}" ]; then
-    CLONE_DIR="$IN_DIRS_CLONE_DIR"
+  if [ -n "${REPO_CLONE_DIR:-}" ]; then
+    CLONE_DIR="$REPO_CLONE_DIR"
     # Already populated by an earlier invocation sharing this dir? Reuse it.
     if git -C "$CLONE_DIR" rev-parse --git-dir >/dev/null 2>&1; then
       CLONE_STATE=ok; return 0
     fi
     mkdir -p "$CLONE_DIR"
-    if git clone --quiet --filter=blob:none --no-checkout "https://github.com/$REPO.git" "$CLONE_DIR" 2>/dev/null; then
-      CLONE_STATE=ok; return 0
-    fi
-    CLONE_STATE=fail
-    echo "in-dirs: git clone of $REPO into $CLONE_DIR failed — IN-DIRS column will show ERR." >&2
-    return 1
+  else
+    CLONE_DIR=$(mktemp -d)
+    trap 'rm -rf "$CLONE_DIR"' EXIT
   fi
-  CLONE_DIR=$(mktemp -d)
-  trap 'rm -rf "$CLONE_DIR"' EXIT
   if git clone --quiet --filter=blob:none --no-checkout "https://github.com/$REPO.git" "$CLONE_DIR" 2>/dev/null; then
     CLONE_STATE=ok; return 0
   fi
   CLONE_STATE=fail
-  echo "in-dirs: git clone of $REPO failed — IN-DIRS column will show ERR." >&2
+  echo "clone: git clone of $REPO failed — no PR list." >&2
   return 1
 }
 
-# Echo YES if the PR whose merge commit is $1 (a 7-char SHA) changed any file
-# under one of the IN_DIRS_ARR prefixes, NO otherwise. Used only with --in-dirs=.
-# Echoes ERR if the clone failed or the commit isn't present.
-# The PR's changes are the diff of its merge commit against its first parent
-# (the base branch) — which works for both squash merges (1 parent) and merge
-# commits (2 parents). Git pathspecs match at directory boundaries.
-pr_in_dirs() {
-  local sha="$1" base nparents
-  ensure_clone || { echo "ERR"; return; }
-  git -C "$CLONE_DIR" cat-file -e "${sha}^{commit}" 2>/dev/null || { echo "ERR"; return; }
-  nparents=$(( $(git -C "$CLONE_DIR" rev-list --parents -n1 "$sha" 2>/dev/null | wc -w) - 1 ))
-  if [ "$nparents" -ge 2 ]; then base="${sha}^1"; else base="${sha}^"; fi
-  if git -C "$CLONE_DIR" diff --name-only "$base" "$sha" -- "${IN_DIRS_ARR[@]}" 2>/dev/null | grep -q .; then
-    echo "YES"
+# Derive the PR table columns from one first-parent commit of the default branch.
+# Sets PR_NUM ("#123", or "-" for a direct push), PR_TITLE, PR_TICKET ("#N" or
+# NA) and PR_AUTHOR from the commit's subject, body, author name and email.
+#   * squash merge:  subject "Title (#123)"            -> title, PR 123
+#   * merge commit:  subject "Merge pull request #123 from ..." + body "Title"
+#   * ticket: a "bcgov/entity#N" / ".../entity/issues/N" ref anywhere in the
+#     message, else the leading ticket number of the title ("34267 - Fix ..."),
+#     else NA. (The PR body isn't in git, so title convention is the source.)
+#   * author: the GitHub login when the author email is a GitHub noreply address
+#     (squash merges: "12345+login@users.noreply.github.com"), else the git name.
+parse_commit() {  # parse_commit <subject> <body> <author-name> <author-email>
+  local subj="$1" body="$2" name="$3" email="$4"
+  if [[ "$subj" =~ ^Merge\ pull\ request\ \#([0-9]+)\  ]]; then
+    PR_NUM="#${BASH_REMATCH[1]}"
+    PR_TITLE="${body%%$'\n'*}"
+    [ -z "$PR_TITLE" ] && PR_TITLE="$subj"
+  elif [[ "$subj" =~ ^(.*)\ \(\#([0-9]+)\)$ ]]; then
+    PR_NUM="#${BASH_REMATCH[2]}"
+    PR_TITLE="${BASH_REMATCH[1]}"
   else
-    echo "NO"
+    PR_NUM="-"
+    PR_TITLE="$subj"
+  fi
+  if [[ "$subj"$'\n'"$body" =~ bcgov/entity(#|/issues/)([0-9]+) ]]; then
+    PR_TICKET="#${BASH_REMATCH[2]}"
+  elif [[ "$PR_TITLE" =~ ^[[:space:]]*#?([0-9]{4,6})([^0-9]|$) ]]; then
+    PR_TICKET="#${BASH_REMATCH[1]}"
+  else
+    PR_TICKET="NA"
+  fi
+  if [[ "$email" =~ ^([0-9]+\+)?([^@]+)@users\.noreply\.github\.com$ ]]; then
+    PR_AUTHOR="@${BASH_REMATCH[2]}"
+  else
+    PR_AUTHOR="$name"
+  fi
+}
+
+# Print the PR table (text unless --html, then HTML) for the first-parent commits
+# in git range $1 (e.g. "STOP..origin/HEAD"), newest first, honouring --in-dirs.
+# Sets SHOWN to the number of rows.
+list_prs() {  # list_prs <git-range>
+  local range="$1" pathspec=() csha cdate cname cemail csubj cbody
+  local pr_cell ticket_cell commit_cell r hnum hticket hsha hdate hauthor htitle
+  [ "$IN_DIRS" -eq 1 ] && pathspec=(-- "${IN_DIRS_ARR[@]}")
+  SHOWN=0
+  local pr_rows=()
+  # NUL-terminated records, unit-separator (\x1f) between fields: the body may
+  # contain anything (tabs, newlines) so tsv isn't safe.
+  while IFS=$'\x1f' read -r -d '' csha cdate cname cemail csubj cbody; do
+    [ -z "$csha" ] && continue
+    parse_commit "$csubj" "$cbody" "$cname" "$cemail"
+    [ "$HTML" -ne 1 ] && printf '%-42.41s %-20.20s %-7s %-9s %-12s %-9s\n' "$PR_TITLE" "$PR_AUTHOR" "$PR_NUM" "$PR_TICKET" "$cdate" "$csha"
+    pr_rows+=("$PR_NUM"$'\t'"$PR_TICKET"$'\t'"$csha"$'\t'"$cdate"$'\t'"$PR_AUTHOR"$'\t'"$PR_TITLE")
+    SHOWN=$((SHOWN + 1))
+  done < <(git -C "$CLONE_DIR" log --first-parent -z --abbrev=7 \
+             --format='%h%x1f%cs%x1f%an%x1f%ae%x1f%s%x1f%b' "$range" ${pathspec[@]+"${pathspec[@]}"} 2>/dev/null)
+
+  # Raw HTML version of the table (no CSS), printed after the text table.
+  if [ "$SHOWN" -gt 0 ]; then
+    echo
+    # With --in-dirs the rows are already filtered to commits that touched the
+    # dirs, so the table looks like the others — just label it with the filter.
+    [ "$IN_DIRS" -eq 1 ] && echo "these are the commits IN-DIRS=$IN_DIRS_ARG"
+    echo "<table border=\"1\">"
+    echo "  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>"
+    for r in "${pr_rows[@]}"; do
+      IFS=$'\t' read -r hnum hticket hsha hdate hauthor htitle <<< "$r"
+      # Ticket cell -> link to the bcgov/entity issue, unless it's NA.
+      if [ "$hticket" = "NA" ]; then
+        ticket_cell="NA"
+      else
+        ticket_cell="<a href=\"https://github.com/bcgov/entity/issues/${hticket#\#}\">$(html_escape "$hticket")</a>"
+      fi
+      # PR cell -> link to the PR on $REPO, e.g. https://github.com/bcgov/lear/pull/123
+      # ($hnum is like "#123"); "-" for a commit that isn't a PR merge.
+      if [ "$hnum" = "-" ]; then
+        pr_cell="-"
+      else
+        pr_cell="<a href=\"https://github.com/$REPO/pull/${hnum#\#}\">$(html_escape "$hnum")</a>"
+      fi
+      # Commit cell -> link to the commit on $REPO.
+      commit_cell="<a href=\"https://github.com/$REPO/commit/$hsha\">$(html_escape "$hsha")</a>"
+      printf '  <tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n' \
+        "$(html_escape "$htitle")" "$(html_escape "$hauthor")" "$pr_cell" \
+        "$ticket_cell" "$(html_escape "$hdate")" "$commit_cell"
+    done
+    echo "</table>"
   fi
 }
 
@@ -346,89 +425,36 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
     printf '%-42s %-20s %-7s %-9s %-12s %-9s\n' "------------------------------------------" "--------------------" "-------" "-------" "-----------" "-------"
   fi
 
-  # Pull recent closed PRs, keep the merged ones, newest-merged first. TICKET
-  # comes from a PR-body ref like "bcgov/entity#NNNNN" or ".../entity/issues/NNNNN"; NA if absent.
-  # Full title is carried for the HTML table; the text table truncates with %.41s.
-  PRS_JSON=$(api "/repos/$REPO/pulls?state=closed&per_page=100&sort=updated&direction=desc") || PRS_JSON='[]'
+  # The list itself comes from git: every first-parent commit on the default
+  # branch in the range previous-test..latest-test is one merged PR shipped in
+  # the latest push (see ensure_clone / list_prs). --in-dirs is a pathspec.
+  ensure_clone || exit 1
+  if ! git -C "$CLONE_DIR" cat-file -e "${START_SHA}^{commit}" 2>/dev/null; then
+    echo "post-release: latest test commit $START_SHA (run #$START_RUN) is not in $REPO's history — cannot scope the release." >&2
+    [ "$HTML" -eq 1 ] && echo "warning: test commit $START_SHA not found in $REPO history — no PR list"
+    exit 0
+  fi
+  if ! git -C "$CLONE_DIR" cat-file -e "${STOP_SHA}^{commit}" 2>/dev/null; then
+    echo "post-release: previous test commit $STOP_SHA (run #$STOP_RUN) is not in $REPO's history — cannot bound the release window." >&2
+    [ "$HTML" -eq 1 ] && echo "warning: previous test commit $STOP_SHA not found in $REPO history — no PR list"
+    exit 0
+  fi
+  if ! git -C "$CLONE_DIR" merge-base --is-ancestor "$STOP_SHA" "$START_SHA" 2>/dev/null; then
+    # e.g. one of the two deploys came from a feature/hotfix branch; the range
+    # then lists what's reachable from START but not STOP, which may overshoot.
+    echo "post-release: warning — previous test commit $STOP_SHA is not an ancestor of $START_SHA; the list may be inexact." >&2
+    [ "$HTML" -eq 1 ] && echo "warning: test commits $STOP_SHA and $START_SHA are not on one line of history — list may be inexact"
+  fi
 
-  # Walk merged PRs newest-first. Skip everything until START_SHA (those were
-  # merged AFTER the latest test deploy and aren't in it). Include from START_SHA
-  # down to — but excluding — STOP_SHA (the previous release boundary).
-  in_scope=0; found_stop=0; shown=0
-  pr_rows=()
-  while IFS=$'\t' read -r pnum pticket psha pdate pauthor ptitle; do
-    [ -z "$pnum" ] && continue
-    # not yet at the latest test deploy commit -> merged after the deploy, skip
-    if [ "$in_scope" -eq 0 ]; then
-      if [ "$psha" = "$START_SHA" ]; then in_scope=1; else continue; fi
-    fi
-    # reached the previous test deploy commit -> stop without printing it
-    if [ "$psha" = "$STOP_SHA" ]; then found_stop=1; break; fi
-    pauthor="@$pauthor"   # prepend @ to the handle (used by both text and HTML)
-    if [ "$IN_DIRS" -eq 1 ]; then
-      changed=$(pr_in_dirs "$psha")
-      # With --in-dirs, drop PRs that didn't touch the filtered dirs (NO); keep
-      # YES and ERR (ERR is a clone/lookup failure worth surfacing).
-      [ "$changed" = "NO" ] && continue
-    else
-      changed=""
-    fi
-    [ "$HTML" -ne 1 ] && printf '%-42.41s %-20.20s %-7s %-9s %-12s %-9s\n' "$ptitle" "$pauthor" "$pnum" "$pticket" "$pdate" "$psha"
-    pr_rows+=("$pnum"$'\t'"$pticket"$'\t'"$psha"$'\t'"$pdate"$'\t'"$pauthor"$'\t'"$ptitle"$'\t'"$changed")
-    shown=$((shown + 1))
-  # Here-string (not process substitution) so the early `break` above can't
-  # SIGPIPE jq mid-write ("Broken pipe"); jq finishes into the captured string.
-  done <<< "$(printf '%s' "$PRS_JSON" | jq -r '
-    [ .[] | select(.merged_at != null) ] | sort_by(.merged_at) | reverse | .[] |
-    [ ("#" + (.number|tostring)),
-      ((.body // "") | [scan("bcgov/entity(?:#|/issues/)([0-9]+)")] | if length>0 then "#"+.[0][0] else "NA" end),
-      ((.merge_commit_sha // "")[0:7]),
-      (.merged_at[0:10]),
-      .user.login,
-      .title ] | @tsv')"
+  list_prs "$STOP_SHA..$START_SHA"
 
-  if [ "$in_scope" -eq 0 ]; then
-    echo "post-release: warning — latest test commit $START_SHA (run #$START_RUN) not found in the last" >&2
-    echo "              100 merged PRs; cannot scope the release. (Deploy commit may not be a PR merge commit.)" >&2
-  elif [ "$found_stop" -eq 0 ]; then
-    echo "post-release: warning — previous test commit $STOP_SHA (run #$STOP_RUN) not found in the last" >&2
-    echo "              100 merged PRs; the list above may extend past the actual release window." >&2
-  elif [ "$shown" -eq 0 ]; then
-    # With --in-dirs every in-scope PR may have been filtered out (all NO); say
-    # so explicitly (printed in HTML too, since there's no table to show).
+  if [ "$SHOWN" -eq 0 ]; then
+    # With --in-dirs every in-scope PR may have been filtered out; say so
+    # explicitly (printed in HTML too, since there's no table to show).
     if [ "$IN_DIRS" -eq 1 ]; then
       echo "No commits in IN-DIRS=$IN_DIRS_ARG"
     else
       [ "$HTML" -ne 1 ] && echo "(none — the latest test deploy contained no new merged PRs)"
     fi
-  fi
-
-  # Raw HTML version of the second table (no CSS), printed after the text table.
-  if [ "$shown" -gt 0 ]; then
-    echo
-    # With --in-dirs the rows are already filtered to commits that touched the
-    # dirs, so the table looks like the others — just label it with the filter.
-    [ "$IN_DIRS" -eq 1 ] && echo "these are the commits IN-DIRS=$IN_DIRS_ARG"
-    echo "<table border=\"1\">"
-    echo "  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>"
-    for r in "${pr_rows[@]}"; do
-      IFS=$'\t' read -r hnum hticket hsha hdate hauthor htitle hchanged <<< "$r"
-      # Ticket cell -> link to the bcgov/entity issue, unless it's NA.
-      if [ "$hticket" = "NA" ]; then
-        ticket_cell="NA"
-      else
-        ticket_cell="<a href=\"https://github.com/bcgov/entity/issues/${hticket#\#}\">$(html_escape "$hticket")</a>"
-      fi
-      # PR cell -> link to the PR on the repo this table is for ($REPO), e.g.
-      # https://github.com/bcgov/lear/pull/123. $hnum is like "#123".
-      pr_cell="<a href=\"https://github.com/$REPO/pull/${hnum#\#}\">$(html_escape "$hnum")</a>"
-      # Commit cell -> link to the commit on the repo this table is for ($REPO),
-      # e.g. https://github.com/bcgov/lear/commit/abc1234.
-      commit_cell="<a href=\"https://github.com/$REPO/commit/$hsha\">$(html_escape "$hsha")</a>"
-      printf '  <tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n' \
-        "$(html_escape "$htitle")" "$(html_escape "$hauthor")" "$pr_cell" \
-        "$ticket_cell" "$(html_escape "$hdate")" "$commit_cell"
-    done
-    echo "</table>"
   fi
 fi

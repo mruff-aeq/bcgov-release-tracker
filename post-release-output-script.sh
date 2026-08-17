@@ -1,3 +1,13 @@
+# Every table's PR list is read from a local git clone of its repo (see
+# ensure_clone in post-release-watch.sh). bcgov/lear is big and used by SIX
+# tables (whole repo + five queue_services/*), so clone it ONCE into a shared
+# dir and pass it via REPO_CLONE_DIR to each lear invocation only (the var is
+# scoped to a single repo, so it must NOT be exported around the other repos).
+# stdout is the report HTML, so mktemp's path is captured into the var (not
+# printed). Removed at the end; the other repos use their own private clones.
+LEAR_CLONE_DIR="$(mktemp -d)"
+lear_watch() { REPO_CLONE_DIR="$LEAR_CLONE_DIR" ./post-release-watch.sh "$@"; }
+
 echo "<h1>Post-Release Report (PRs that have been pushed into TEST this release cycle)</h1>"
 echo "<p>Generated: $(TZ='America/Vancouver' date '+%A, %B %-d, %Y at %-I:%M %p %Z')</p>"
 
@@ -7,7 +17,7 @@ echo "<h2>"
 echo "bcgov/lear"
 echo "</h2>"
 echo "<pre>"
-./post-release-watch.sh 6 business-api-cd.yml bcgov/lear test-release --html
+lear_watch 6 business-api-cd.yml bcgov/lear test-release --html
 echo "</pre>"
 echo "<hr>"
 
@@ -65,14 +75,6 @@ echo "<hr>"
 # last so the whole-lear table above keeps its original first position. Each is
 # deployed by its own CD workflow and filtered with --in-dirs=queue_services/
 # <child> so the table denotes only the PRs that changed that component.
-#
-# Clone lear ONCE and share it across all five tables via IN_DIRS_CLONE_DIR (see
-# ensure_clone in post-release-watch.sh): the first table populates this dir, the
-# other four reuse it, and we remove it afterwards. stdout is the report HTML,
-# so mktemp's path is captured into the var (not printed). If the clone can't be
-# made each table just falls back to its own.
-LEAR_CLONE_DIR="$(mktemp -d)"
-export IN_DIRS_CLONE_DIR="$LEAR_CLONE_DIR"
 
 # bcgov/lear (queue_services/business-bn)
 echo "<!-- bcgov/lear queue_services/business-bn -->"
@@ -80,7 +82,7 @@ echo "<h2>"
 echo "bcgov/lear (queue_services/business-bn)"
 echo "</h2>"
 echo "<pre>"
-./post-release-watch.sh 6 business-bn-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-bn --html
+lear_watch 6 business-bn-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-bn --html
 echo "</pre>"
 echo "<hr>"
 
@@ -90,7 +92,7 @@ echo "<h2>"
 echo "bcgov/lear (queue_services/business-digital-credentials)"
 echo "</h2>"
 echo "<pre>"
-./post-release-watch.sh 6 business-digital-credentials-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-digital-credentials --html
+lear_watch 6 business-digital-credentials-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-digital-credentials --html
 echo "</pre>"
 echo "<hr>"
 
@@ -100,7 +102,7 @@ echo "<h2>"
 echo "bcgov/lear (queue_services/business-emailer)"
 echo "</h2>"
 echo "<pre>"
-./post-release-watch.sh 6 business-emailer-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-emailer --html
+lear_watch 6 business-emailer-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-emailer --html
 echo "</pre>"
 echo "<hr>"
 
@@ -110,7 +112,7 @@ echo "<h2>"
 echo "bcgov/lear (queue_services/business-filer)"
 echo "</h2>"
 echo "<pre>"
-./post-release-watch.sh 6 business-filer-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-filer --html
+lear_watch 6 business-filer-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-filer --html
 echo "</pre>"
 echo "<hr>"
 
@@ -120,12 +122,11 @@ echo "<h2>"
 echo "bcgov/lear (queue_services/business-pay)"
 echo "</h2>"
 echo "<pre>"
-./post-release-watch.sh 6 business-pay-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-pay --html
+lear_watch 6 business-pay-cd.yml bcgov/lear test-release --in-dirs=queue_services/business-pay --html
 echo "</pre>"
 echo "<hr>"
 
-# Done with lear's per-dir tables — drop the shared clone.
-unset IN_DIRS_CLONE_DIR
+# Done with lear's tables — drop the shared clone.
 rm -rf "$LEAR_CLONE_DIR"
 
 # Repo Versions
