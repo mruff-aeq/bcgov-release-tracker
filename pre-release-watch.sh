@@ -249,15 +249,32 @@ ensure_clone() {
 #   * merge commit:  subject "Merge pull request #123 from ..." + body "Title"
 #   * ticket: a "bcgov/entity#N" / ".../entity/issues/N" ref anywhere in the
 #     message, else the leading ticket number of the title ("34267 - Fix ..."),
-#     else NA. (The PR body isn't in git, so title convention is the source.)
+#     else (merge commits) the leading number of the PR branch name in the
+#     subject ("... from user/34181_minio_removal"), else NA. (The PR body isn't
+#     in git, so title/branch conventions are the source.)
 #   * author: the GitHub login when the author email is a GitHub noreply address
 #     (squash merges: "12345+login@users.noreply.github.com"), else the git name.
-parse_commit() {  # parse_commit <subject> <body> <author-name> <author-email>
-  local subj="$1" body="$2" name="$3" email="$4"
+#     For merge commits the first-parent author is whoever pressed Merge, so the
+#     name/email of the PR head commit (second parent, <sha>^2) are used instead;
+#     if that email isn't a noreply one but the branch came from a fork
+#     ("from login/branch"), the fork owner's login is the PR author.
+parse_commit() {  # parse_commit <subject> <body> <author-name> <author-email> [sha]
+  local subj="$1" body="$2" name="$3" email="$4" sha="${5:-}" branch="" fork=""
+  if [[ "$subj" =~ ^Merge\ pull\ request\ \#([0-9]+)\ from\ ([^/[:space:]]+)/([^[:space:]]+) ]]; then
+    branch="${BASH_REMATCH[3]}"
+    # Branch owner differs from the repo owner -> a fork, i.e. the PR author's login.
+    [ "$(printf %s "${BASH_REMATCH[2]}" | tr A-Z a-z)" != "$(printf %s "${REPO%%/*}" | tr A-Z a-z)" ] && fork="${BASH_REMATCH[2]}"
+  fi
   if [[ "$subj" =~ ^Merge\ pull\ request\ \#([0-9]+)\  ]]; then
     PR_NUM="#${BASH_REMATCH[1]}"
     PR_TITLE="${body%%$'\n'*}"
     [ -z "$PR_TITLE" ] && PR_TITLE="$subj"
+    # PR author = author of the merged branch's head commit, not the merger.
+    if [ -n "$sha" ] && [ -n "$CLONE_DIR" ]; then
+      local pname pemail
+      IFS=$'\x1f' read -r pname pemail < <(git -C "$CLONE_DIR" log -1 --format='%an%x1f%ae' "$sha^2" 2>/dev/null </dev/null)
+      [ -n "$pname" ] && { name="$pname"; email="$pemail"; }
+    fi
   elif [[ "$subj" =~ ^(.*)\ \(\#([0-9]+)\)$ ]]; then
     PR_NUM="#${BASH_REMATCH[2]}"
     PR_TITLE="${BASH_REMATCH[1]}"
@@ -269,11 +286,15 @@ parse_commit() {  # parse_commit <subject> <body> <author-name> <author-email>
     PR_TICKET="#${BASH_REMATCH[2]}"
   elif [[ "$PR_TITLE" =~ ^[[:space:]]*#?([0-9]{4,6})([^0-9]|$) ]]; then
     PR_TICKET="#${BASH_REMATCH[1]}"
+  elif [[ "$branch" =~ ^([0-9]{4,6})([^0-9]|$) ]]; then
+    PR_TICKET="#${BASH_REMATCH[1]}"
   else
     PR_TICKET="NA"
   fi
   if [[ "$email" =~ ^([0-9]+\+)?([^@]+)@users\.noreply\.github\.com$ ]]; then
     PR_AUTHOR="@${BASH_REMATCH[2]}"
+  elif [ -n "$fork" ]; then
+    PR_AUTHOR="@$fork"
   else
     PR_AUTHOR="$name"
   fi
@@ -292,7 +313,7 @@ list_prs() {  # list_prs <git-range>
   # contain anything (tabs, newlines) so tsv isn't safe.
   while IFS=$'\x1f' read -r -d '' csha cdate cname cemail csubj cbody; do
     [ -z "$csha" ] && continue
-    parse_commit "$csubj" "$cbody" "$cname" "$cemail"
+    parse_commit "$csubj" "$cbody" "$cname" "$cemail" "$csha"
     [ "$HTML" -ne 1 ] && printf '%-42.41s %-20.20s %-7s %-9s %-12s %-9s\n' "$PR_TITLE" "$PR_AUTHOR" "$PR_NUM" "$PR_TICKET" "$cdate" "$csha"
     pr_rows+=("$PR_NUM"$'\t'"$PR_TICKET"$'\t'"$csha"$'\t'"$cdate"$'\t'"$PR_AUTHOR"$'\t'"$PR_TITLE")
     SHOWN=$((SHOWN + 1))
