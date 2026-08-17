@@ -1,7 +1,8 @@
 name: Pre-release report
 
 # Generates the pre-release report every hour and commits the HTML into
-# pre-release-report/. The scripts read the public GitHub API (~18 calls/run),
+# pre-release-report/. The scripts read the public GitHub API (~12 calls/run:
+# CD runs + deployments per repo; the PR lists come from git clones),
 # authenticated with the built-in GITHUB_TOKEN (injected below) so they use that
 # token's ~1000/hour budget rather than the 60/hour anonymous per-IP cap that
 # shared runner IPs frequently exhaust. As a safety net the "Generate" step still
