@@ -41,23 +41,37 @@ jobs:
           mkdir -p pre-release-report
           # Keep the previous report so the freshness check below can compare.
           cp pre-release-report/pre-release-report.html /tmp/prev-report.html 2>/dev/null || true
-          # stdout -> the HTML file; stderr -> a log we inspect for throttling.
-          bash pre-release-output-script.sh 2>/tmp/report.err \
-            | tee pre-release-report/pre-release-report.html
-          echo "----- script stderr -----"
-          cat /tmp/report.err || true
-          # Bail (red X, no commit) if the run was rate-limited or a runs fetch
-          # failed, so we don't overwrite a good report with a degraded one.
-          if grep -qE 'error: (403|429)|failed to fetch runs' /tmp/report.err; then
-            echo "::error::GitHub API throttled or a runs fetch failed — not committing this report."
-            exit 1
-          fi
-          # Bail if any repo section's newest run number went BACKWARDS vs the
-          # previous report — GitHub's runs API occasionally returns an
-          # incomplete list, which shifts the release boundary into the past.
-          if [ -f /tmp/prev-report.html ] && \
-             ! bash report-freshness-check.sh /tmp/prev-report.html pre-release-report/pre-release-report.html; then
-            echo "::error::Stale run listing from the GitHub API — not committing this report."
+          # GitHub's runs API is flaky from runners: it intermittently returns a
+          # run list missing the newest couple of weeks (about half of the hourly
+          # runs on some days), which the freshness check catches. Rather than
+          # fail on the first such answer, regenerate up to 3 times, pausing
+          # between attempts; only if every attempt is stale/throttled do we fail
+          # (red X, no commit) — never commit a degraded report.
+          ok=0
+          for attempt in 1 2 3; do
+            echo "===== generate attempt $attempt ====="
+            # stdout -> the HTML file; stderr -> a log we inspect for throttling.
+            bash pre-release-output-script.sh 2>/tmp/report.err \
+              | tee pre-release-report/pre-release-report.html
+            echo "----- script stderr -----"
+            cat /tmp/report.err || true
+            # Rate-limited or a runs fetch failed -> degraded report, retry.
+            if grep -qE 'error: (403|429)|failed to fetch runs' /tmp/report.err; then
+              echo "::warning::attempt $attempt: GitHub API throttled or a runs fetch failed."
+            # A repo section's newest run number went BACKWARDS vs the previous
+            # report -> incomplete run listing that shifts the release boundary
+            # into the past, retry.
+            elif [ -f /tmp/prev-report.html ] && \
+                 ! bash report-freshness-check.sh /tmp/prev-report.html pre-release-report/pre-release-report.html; then
+              echo "::warning::attempt $attempt: stale run listing from the GitHub API."
+            else
+              ok=1; break
+            fi
+            [ "$attempt" -lt 3 ] && sleep 90
+          done
+          if [ "$ok" -ne 1 ]; then
+            echo "::error::GitHub API throttled/stale on every attempt — not committing this report."
+            git checkout -- pre-release-report/pre-release-report.html 2>/dev/null || true
             exit 1
           fi
 
