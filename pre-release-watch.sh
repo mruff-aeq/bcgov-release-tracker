@@ -271,9 +271,9 @@ parse_commit() {  # parse_commit <subject> <body> <author-name> <author-email> [
     [ -z "$PR_TITLE" ] && PR_TITLE="$subj"
     # PR author = author of the merged branch's head commit, not the merger.
     if [ -n "$sha" ] && [ -n "$CLONE_DIR" ]; then
-      local pname pemail
-      IFS=$'\x1f' read -r pname pemail < <(git -C "$CLONE_DIR" log -1 --format='%an%x1f%ae' "$sha^2" 2>/dev/null </dev/null)
-      [ -n "$pname" ] && { name="$pname"; email="$pemail"; }
+      local pname pemail psha
+      IFS=$'\x1f' read -r psha pname pemail < <(git -C "$CLONE_DIR" log -1 --format='%H%x1f%an%x1f%ae' "$sha^2" 2>/dev/null </dev/null)
+      [ -n "$pname" ] && { name="$pname"; email="$pemail"; sha="$psha"; }
     fi
   elif [[ "$subj" =~ ^(.*)\ \(\#([0-9]+)\)$ ]]; then
     PR_NUM="#${BASH_REMATCH[2]}"
@@ -296,8 +296,27 @@ parse_commit() {  # parse_commit <subject> <body> <author-name> <author-email> [
   elif [ -n "$fork" ]; then
     PR_AUTHOR="@$fork"
   else
-    PR_AUTHOR="$name"
+    # Ask GitHub which login owns the commit's author email (one API call per
+    # distinct email, cached for the run); fall back to the git name.
+    local login
+    login=$(email_login "$email" "$sha")
+    if [ -n "$login" ]; then PR_AUTHOR="@$login"; else PR_AUTHOR="$name"; fi
   fi
+}
+
+# Resolve a commit author email to a GitHub login via /repos/:repo/commits/:sha
+# (.author.login is GitHub's own email->account match). Prints the login or
+# nothing. Cached per email in EMAIL_LOGINS ("email=login" lines) so a dev with
+# five PRs costs one request.
+EMAIL_LOGINS=""
+email_login() {  # email_login <email> <sha>
+  local email="$1" sha="$2" hit login
+  [ -z "$email" ] || [ -z "$sha" ] && return 0
+  hit=$(printf '%s\n' "$EMAIL_LOGINS" | grep -F -m1 -- "$email=")
+  if [ -n "$hit" ]; then printf '%s' "${hit#*=}"; return 0; fi
+  login=$(api "/repos/$REPO/commits/$sha" 2>/dev/null | jq -r '.author.login // empty' 2>/dev/null)
+  EMAIL_LOGINS="$EMAIL_LOGINS"$'\n'"$email=$login"
+  printf '%s' "$login"
 }
 
 # Print the PR table (text unless --html, then HTML) for the first-parent commits
