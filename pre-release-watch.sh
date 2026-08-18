@@ -161,9 +161,45 @@ api() {  # api <path-or-full-url> ; prints body on success, returns nonzero on f
   return 1
 }
 
+# GitHub's runs/deployments listings are served by eventually-consistent
+# replicas: from CI runners a request intermittently gets a snapshot missing
+# the newest ~2 weeks of items (~15% of requests, seen 2026-08-11..18; the
+# same stale run numbers recur, e.g. bcgov/lear #709 while #731 exists). A
+# stale reply is always a strict SUBSET of the truth, so fetching the same
+# listing a few times and taking the UNION (by item id) makes the odds of a
+# still-stale result p^N instead of p. Costs N-1 extra cheap calls per repo.
+LIST_FETCHES="${LIST_FETCHES:-3}"
+
+# api_union <path> <items-jq-path> <sort-key>
+# Fetches <path> LIST_FETCHES times, unions the items found at <items-jq-path>
+# by .id, sorts them newest-first on <sort-key>, and prints the merged JSON
+# array. Fails only if EVERY fetch failed. Warns on stderr when the fetches
+# disagreed (i.e. at least one stale reply was caught).
+api_union() {
+  local path="$1" items="$2" key="$3" i dir ok=0 sizes=""
+  dir=$(mktemp -d)
+  for i in $(seq 1 "$LIST_FETCHES"); do
+    # Bodies go through files: a 50-run page is far too big for a jq
+    # --argjson argument (E2BIG).
+    if api "$path" > "$dir/$i.json"; then
+      ok=1
+      sizes="$sizes$(jq "$items | length" "$dir/$i.json") "
+    else
+      rm -f "$dir/$i.json"
+    fi
+    [ "$i" -lt "$LIST_FETCHES" ] && sleep 1
+  done
+  if [ "$ok" -ne 1 ]; then rm -rf "$dir"; return 1; fi
+  if [ "$(printf '%s\n' $sizes | sort -u | wc -l)" -gt 1 ]; then
+    echo "note: $path returned differing item counts ($sizes) — stale replica caught, using union." >&2
+  fi
+  jq -s --arg k "$key" "map($items) | add | unique_by(.id) | sort_by(.[\$k]) | reverse" "$dir"/*.json
+  rm -rf "$dir"
+}
+
 # Fetch the repo's recent deployments once; reused to resolve every run's env.
 # 100 covers a wide window even for repos with frequent auto-deploys to dev.
-DEPLOYS_JSON=$(api "/repos/$REPO/deployments?per_page=100") || DEPLOYS_JSON='[]'
+DEPLOYS_JSON=$(api_union "/repos/$REPO/deployments?per_page=100" . created_at) || DEPLOYS_JSON='[]'
 
 # Resolve the deploy environment for a run, given its commit SHA + start time.
 # A run's deployment shares its SHA and is created a few seconds later, so we
@@ -375,11 +411,14 @@ list_prs() {  # list_prs <git-range>
 printf '%-6s %-9s %-8s %-16s %-9s %-21s %-30s\n' "RUN" "ENV" "RESULT" "ACTOR" "COMMIT" "CREATED (UTC)" "MESSAGE"
 printf '%-6s %-9s %-8s %-16s %-9s %-21s %-30s\n' "------" "-------" "------" "----------------" "-------" "---------------------" "------------------------------"
 
-# One call gets the last 50 workflow_dispatch runs with everything the table
+# One listing gets the last 50 workflow_dispatch runs with everything the table
 # needs: run number, commit, conclusion, time, actor and commit subject. We
 # then keep the newest COUNT. (No per-run API calls — keeps us well under the
 # anonymous rate limit.)
-RUNS_JSON=$(api "/repos/$REPO/actions/workflows/$WORKFLOW/runs?event=workflow_dispatch&per_page=50") || {
+# Fetched LIST_FETCHES times and unioned (see api_union) so a stale replica
+# can't silently drop the newest runs and shift the release boundary back.
+RUNS_JSON=$(api_union "/repos/$REPO/actions/workflows/$WORKFLOW/runs?event=workflow_dispatch&per_page=50" .workflow_runs run_number \
+  | jq '{workflow_runs: .}') || {
   echo "error: failed to fetch runs for $REPO ($WORKFLOW)." >&2
   exit 1
 }
