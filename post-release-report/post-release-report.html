@@ -1,5 +1,5 @@
 <h1>Post-Release Report (PRs that have been pushed into TEST this release cycle)</h1>
-<p>Generated: Wednesday, August 26, 2026 at 8:57 AM PDT</p>
+<p>Generated: Wednesday, August 26, 2026 at 11:12 AM PDT</p>
 <!-- bcgov/lear -->
 <h2>
 bcgov/lear
@@ -7,34 +7,37 @@ bcgov/lear
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#753   test      success  meawong          cedbc52   2026-08-26 17:29:09   34086 Filer - amalgamation co 
 #751   ?         startup_failure meawong          4913422   2026-08-26 15:34:15   Merge pull request #4732 from 
 #739   sandbox   success  meawong          33a0622   2026-08-19 19:45:22   34484 validate amalgamation i 
 #738   test      success  meawong          33a0622   2026-08-19 19:36:15   34484 validate amalgamation i 
 #733   prod      success  mruff-aeq        485d927   2026-08-18 17:39:54   34514 - refresh legal api loc 
 #731   dev       success  JazzarKarim      5071d88   2026-08-17 20:08:08   34514 - return entities with  
-#727   sandbox   success  mruff-aeq        81c448e   2026-08-13 18:14:41   Merge pull request #4695 from 
 
-showing PRs between c8a4229 and 33a0622
+showing PRs between 33a0622 and cedbc52
 
 <table border="1">
   <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
-  <tr><td>34484 validate amalgamation in correction</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/lear/pull/4709">#4709</a></td><td><a href="https://github.com/bcgov/entity/issues/34484">#34484</a></td><td>2026-08-19</td><td><a href="https://github.com/bcgov/lear/commit/33a0622">33a0622</a></td></tr>
-  <tr><td>bumped business filer</td><td>@benjamin-bc-gov</td><td><a href="https://github.com/bcgov/lear/pull/4712">#4712</a></td><td><a href="https://github.com/bcgov/entity/issues/34611">#34611</a></td><td>2026-08-19</td><td><a href="https://github.com/bcgov/lear/commit/55044b8">55044b8</a></td></tr>
-  <tr><td>Stop firm admin dissolution 400'ing the ledger</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4710">#4710</a></td><td>NA</td><td>2026-08-19</td><td><a href="https://github.com/bcgov/lear/commit/288399d">288399d</a></td></tr>
-  <tr><td>34055</td><td>@ketaki-deodhar</td><td><a href="https://github.com/bcgov/lear/pull/4681">#4681</a></td><td><a href="https://github.com/bcgov/entity/issues/34055">#34055</a></td><td>2026-08-19</td><td><a href="https://github.com/bcgov/lear/commit/9c7ce17">9c7ce17</a></td></tr>
-  <tr><td>34507 Emailer - appoint/cease/change address receiver</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4708">#4708</a></td><td><a href="https://github.com/bcgov/entity/issues/34507">#34507</a></td><td>2026-08-19</td><td><a href="https://github.com/bcgov/lear/commit/b770ccf">b770ccf</a></td></tr>
-  <tr><td>Temp Changes for testing in Prod</td><td>@Rajandeep98</td><td><a href="https://github.com/bcgov/lear/pull/4693">#4693</a></td><td>NA</td><td>2026-08-18</td><td><a href="https://github.com/bcgov/lear/commit/b24454e">b24454e</a></td></tr>
-  <tr><td>32831 nr duplicate</td><td>@benjamin-bc-gov</td><td><a href="https://github.com/bcgov/lear/pull/4703">#4703</a></td><td><a href="https://github.com/bcgov/entity/issues/32831">#32831</a></td><td>2026-08-18</td><td><a href="https://github.com/bcgov/lear/commit/9ff8e56">9ff8e56</a></td></tr>
-  <tr><td>34537 include amalgamation data in extended endpoint</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/lear/pull/4702">#4702</a></td><td><a href="https://github.com/bcgov/entity/issues/34537">#34537</a></td><td>2026-08-18</td><td><a href="https://github.com/bcgov/lear/commit/8ae1f6f">8ae1f6f</a></td></tr>
-  <tr><td>34514 - refresh legal api lock file to pick up business model changes</td><td>@JazzarKarim</td><td><a href="https://github.com/bcgov/lear/pull/4704">#4704</a></td><td><a href="https://github.com/bcgov/entity/issues/34514">#34514</a></td><td>2026-08-17</td><td><a href="https://github.com/bcgov/lear/commit/485d927">485d927</a></td></tr>
-  <tr><td>34514 - return entities with 0001 founding date</td><td>@JazzarKarim</td><td><a href="https://github.com/bcgov/lear/pull/4698">#4698</a></td><td><a href="https://github.com/bcgov/entity/issues/34514">#34514</a></td><td>2026-08-17</td><td><a href="https://github.com/bcgov/lear/commit/5071d88">5071d88</a></td></tr>
-  <tr><td>34267 - Remove extra guards for historical, draft and pending</td><td>@meawong</td><td><a href="https://github.com/bcgov/lear/pull/4701">#4701</a></td><td><a href="https://github.com/bcgov/entity/issues/34267">#34267</a></td><td>2026-08-14</td><td><a href="https://github.com/bcgov/lear/commit/4f55849">4f55849</a></td></tr>
-  <tr><td>34181 minio removal</td><td>@benjamin-bc-gov</td><td><a href="https://github.com/bcgov/lear/pull/4694">#4694</a></td><td><a href="https://github.com/bcgov/entity/issues/34181">#34181</a></td><td>2026-08-14</td><td><a href="https://github.com/bcgov/lear/commit/0c1642b">0c1642b</a></td></tr>
-  <tr><td>34465 Colin API - auth info status tweak</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4697">#4697</a></td><td><a href="https://github.com/bcgov/entity/issues/34465">#34465</a></td><td>2026-08-14</td><td><a href="https://github.com/bcgov/lear/commit/129ee5d">129ee5d</a></td></tr>
-  <tr><td>30642-public-filing-dissolution-date</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4700">#4700</a></td><td><a href="https://github.com/bcgov/entity/issues/30642">#30642</a></td><td>2026-08-14</td><td><a href="https://github.com/bcgov/lear/commit/75af83d">75af83d</a></td></tr>
-  <tr><td>344267 - Add Early AR Filed Registrar Notation</td><td>@meawong</td><td><a href="https://github.com/bcgov/lear/pull/4699">#4699</a></td><td><a href="https://github.com/bcgov/entity/issues/344267">#344267</a></td><td>2026-08-14</td><td><a href="https://github.com/bcgov/lear/commit/2fbfc78">2fbfc78</a></td></tr>
-  <tr><td>34530 new endpoint to get extended business data</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/lear/pull/4696">#4696</a></td><td><a href="https://github.com/bcgov/entity/issues/34530">#34530</a></td><td>2026-08-14</td><td><a href="https://github.com/bcgov/lear/commit/4a47778">4a47778</a></td></tr>
-  <tr><td>34541_noa-ccc-bca-italic</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4695">#4695</a></td><td><a href="https://github.com/bcgov/entity/issues/34541">#34541</a></td><td>2026-08-13</td><td><a href="https://github.com/bcgov/lear/commit/81c448e">81c448e</a></td></tr>
+  <tr><td>34086 Filer - amalgamation colin business flow</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4724">#4724</a></td><td><a href="https://github.com/bcgov/entity/issues/34086">#34086</a></td><td>2026-08-26</td><td><a href="https://github.com/bcgov/lear/commit/cedbc52">cedbc52</a></td></tr>
+  <tr><td>34565 - Remove address fields</td><td>@meawong</td><td><a href="https://github.com/bcgov/lear/pull/4734">#4734</a></td><td><a href="https://github.com/bcgov/entity/issues/34565">#34565</a></td><td>2026-08-26</td><td><a href="https://github.com/bcgov/lear/commit/7cd9f4f">7cd9f4f</a></td></tr>
+  <tr><td>continuation in 2 step nr check</td><td>@benjamin-bc-gov</td><td><a href="https://github.com/bcgov/lear/pull/4732">#4732</a></td><td><a href="https://github.com/bcgov/entity/issues/32831">#32831</a></td><td>2026-08-25</td><td><a href="https://github.com/bcgov/lear/commit/4913422">4913422</a></td></tr>
+  <tr><td>34541 - Italicize Business Corporations Act in Notice of Articles CCC statement</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4729">#4729</a></td><td><a href="https://github.com/bcgov/entity/issues/34541">#34541</a></td><td>2026-08-25</td><td><a href="https://github.com/bcgov/lear/commit/b22fd8a">b22fd8a</a></td></tr>
+  <tr><td>34485 court orders validation in correction</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/lear/pull/4726">#4726</a></td><td><a href="https://github.com/bcgov/entity/issues/34485">#34485</a></td><td>2026-08-25</td><td><a href="https://github.com/bcgov/lear/commit/ccbe5fd">ccbe5fd</a></td></tr>
+  <tr><td>34086 Business Model - amalgamating businesses, colin_identifier</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4723">#4723</a></td><td><a href="https://github.com/bcgov/entity/issues/34086">#34086</a></td><td>2026-08-25</td><td><a href="https://github.com/bcgov/lear/commit/04bdcdb">04bdcdb</a></td></tr>
+  <tr><td>34236 Emailer - inv diss ux</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4725">#4725</a></td><td><a href="https://github.com/bcgov/entity/issues/34236">#34236</a></td><td>2026-08-25</td><td><a href="https://github.com/bcgov/lear/commit/3b5d6fb">3b5d6fb</a></td></tr>
+  <tr><td>34641 script schema updates</td><td>@Rajandeep98</td><td><a href="https://github.com/bcgov/lear/pull/4728">#4728</a></td><td><a href="https://github.com/bcgov/entity/issues/34641">#34641</a></td><td>2026-08-25</td><td><a href="https://github.com/bcgov/lear/commit/d10e2cc">d10e2cc</a></td></tr>
+  <tr><td>34578 - AGM Extension Year must be After Incorporation Year</td><td>@meawong</td><td><a href="https://github.com/bcgov/lear/pull/4727">#4727</a></td><td><a href="https://github.com/bcgov/entity/issues/34578">#34578</a></td><td>2026-08-25</td><td><a href="https://github.com/bcgov/lear/commit/0bc8928">0bc8928</a></td></tr>
+  <tr><td>32036 - Amalgamation Certificate: display home jurisdiction for XPRO/foreign corps</td><td>@meawong</td><td><a href="https://github.com/bcgov/lear/pull/4722">#4722</a></td><td><a href="https://github.com/bcgov/entity/issues/32036">#32036</a></td><td>2026-08-24</td><td><a href="https://github.com/bcgov/lear/commit/67cda83">67cda83</a></td></tr>
+  <tr><td>34088 legal api colin snap proxy and validation</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4718">#4718</a></td><td><a href="https://github.com/bcgov/entity/issues/34088">#34088</a></td><td>2026-08-24</td><td><a href="https://github.com/bcgov/lear/commit/efc4d60">efc4d60</a></td></tr>
+  <tr><td>34088 chore - update schema for amalg</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4721">#4721</a></td><td><a href="https://github.com/bcgov/entity/issues/34088">#34088</a></td><td>2026-08-24</td><td><a href="https://github.com/bcgov/lear/commit/71fbd53">71fbd53</a></td></tr>
+  <tr><td>34460 error downloading Receipts </td><td>@benjamin-bc-gov</td><td><a href="https://github.com/bcgov/lear/pull/4713">#4713</a></td><td><a href="https://github.com/bcgov/entity/issues/34460">#34460</a></td><td>2026-08-24</td><td><a href="https://github.com/bcgov/lear/commit/f98e2b4">f98e2b4</a></td></tr>
+  <tr><td>34553-firms-completing-party-client-skip</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4719">#4719</a></td><td><a href="https://github.com/bcgov/entity/issues/34553">#34553</a></td><td>2026-08-21</td><td><a href="https://github.com/bcgov/lear/commit/6547599">6547599</a></td></tr>
+  <tr><td>34531 include ting id in the business extended response</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/lear/pull/4720">#4720</a></td><td><a href="https://github.com/bcgov/entity/issues/34531">#34531</a></td><td>2026-08-21</td><td><a href="https://github.com/bcgov/lear/commit/284042b">284042b</a></td></tr>
+  <tr><td>34531 schema and model changes for correction</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/lear/pull/4717">#4717</a></td><td><a href="https://github.com/bcgov/entity/issues/34531">#34531</a></td><td>2026-08-21</td><td><a href="https://github.com/bcgov/lear/commit/cfd0469">cfd0469</a></td></tr>
+  <tr><td>34651-bump-registry-schemas-2.18.81</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4715">#4715</a></td><td><a href="https://github.com/bcgov/entity/issues/34651">#34651</a></td><td>2026-08-20</td><td><a href="https://github.com/bcgov/lear/commit/9ebbf2f">9ebbf2f</a></td></tr>
+  <tr><td>34531 schema updates for correction</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/lear/pull/4714">#4714</a></td><td><a href="https://github.com/bcgov/entity/issues/34531">#34531</a></td><td>2026-08-20</td><td><a href="https://github.com/bcgov/lear/commit/06233db">06233db</a></td></tr>
+  <tr><td>34236 Emailer - involuntary dissolution</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4707">#4707</a></td><td><a href="https://github.com/bcgov/entity/issues/34236">#34236</a></td><td>2026-08-20</td><td><a href="https://github.com/bcgov/lear/commit/90bc7dd">90bc7dd</a></td></tr>
+  <tr><td>34088 Colin API - business snapshot endpoint</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4711">#4711</a></td><td><a href="https://github.com/bcgov/entity/issues/34088">#34088</a></td><td>2026-08-20</td><td><a href="https://github.com/bcgov/lear/commit/8cca516">8cca516</a></td></tr>
 </table>
 </pre>
 <hr>
@@ -265,12 +268,12 @@ Repo Versions
   </li>
   <li><strong>business-create-ui</strong>
     <ul>
-      <li>5.18.26</li>
+      <li>5.18.27</li>
     </ul>
   </li>
   <li><strong>business-dashboard-ui</strong>
     <ul>
-      <li>1.3.19</li>
+      <li>1.3.20</li>
     </ul>
   </li>
   <li><strong>business-registry-dashboard</strong>
@@ -300,7 +303,7 @@ Repo Versions
   </li>
   <li><strong>queue_services/business-filer</strong>
     <ul>
-      <li>3.0.26</li>
+      <li>3.0.27</li>
     </ul>
   </li>
   <li><strong>queue_services/business-pay</strong>
