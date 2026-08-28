@@ -1,5 +1,5 @@
 <h1>Pre-Release Report (PRs to be pushed into TEST)</h1>
-<p>Generated: Friday, August 28, 2026 at 2:39 AM PDT</p>
+<p>Generated: Friday, August 28, 2026 at 2:05 PM PDT</p>
 <!-- bcgov/lear -->
 <h2>
 bcgov/lear
@@ -7,17 +7,19 @@ bcgov/lear
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#762   prod      success  mruff-aeq        712ea88   2026-08-28 15:10:32   hotfix/34553-completing-party 
 #760   test      success  kialj876         e218e3e   2026-08-27 22:16:30   Merge pull request #4741 from 
 #759   prod      waiting  mruff-aeq        e218e3e   2026-08-27 22:05:52   Merge pull request #4741 from 
 #758   test      cancelled mruff-aeq        e218e3e   2026-08-27 22:04:10   Merge pull request #4741 from 
 #755   prod      success  meawong          3bc88f4   2026-08-27 17:24:34   34684 - Update document names 
 #753   test      success  meawong          cedbc52   2026-08-26 17:29:09   34086 Filer - amalgamation co 
-#751   ?         startup_failure meawong          4913422   2026-08-26 15:34:15   Merge pull request #4732 from 
 
 warning: test commit e218e3e is not on the default branch — list may be inexact
 
 <table border="1">
   <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
+  <tr><td>34522 - Remove Active CAO Validation for Amalgamation Out Filing</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4738">#4738</a></td><td><a href="https://github.com/bcgov/entity/issues/34522">#34522</a></td><td>2026-08-28</td><td><a href="https://github.com/bcgov/lear/commit/23b1d7b">23b1d7b</a></td></tr>
+  <tr><td>34595 optional first name for director</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/lear/pull/4740">#4740</a></td><td><a href="https://github.com/bcgov/entity/issues/34595">#34595</a></td><td>2026-08-28</td><td><a href="https://github.com/bcgov/lear/commit/f8650ac">f8650ac</a></td></tr>
   <tr><td>34727  - updated Criteria</td><td>@Rajandeep98</td><td><a href="https://github.com/bcgov/lear/pull/4743">#4743</a></td><td><a href="https://github.com/bcgov/entity/issues/34727">#34727</a></td><td>2026-08-27</td><td><a href="https://github.com/bcgov/lear/commit/ba3b493">ba3b493</a></td></tr>
   <tr><td>34595 allow empty firstname for director schema change</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/lear/pull/4739">#4739</a></td><td><a href="https://github.com/bcgov/entity/issues/34595">#34595</a></td><td>2026-08-27</td><td><a href="https://github.com/bcgov/lear/commit/9b2f528">9b2f528</a></td></tr>
   <tr><td>34467 Legal API - amalg UI mapping fix, filer test tweak</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4737">#4737</a></td><td><a href="https://github.com/bcgov/entity/issues/34467">#34467</a></td><td>2026-08-27</td><td><a href="https://github.com/bcgov/lear/commit/d944c68">d944c68</a></td></tr>
@@ -193,6 +195,7 @@ RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSA
 these are the commits IN-DIRS=queue_services/business-filer
 <table border="1">
   <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
+  <tr><td>34595 optional first name for director</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/lear/pull/4740">#4740</a></td><td><a href="https://github.com/bcgov/entity/issues/34595">#34595</a></td><td>2026-08-28</td><td><a href="https://github.com/bcgov/lear/commit/f8650ac">f8650ac</a></td></tr>
   <tr><td>34467 Legal API - amalg UI mapping fix, filer test tweak</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4737">#4737</a></td><td><a href="https://github.com/bcgov/entity/issues/34467">#34467</a></td><td>2026-08-27</td><td><a href="https://github.com/bcgov/lear/commit/d944c68">d944c68</a></td></tr>
   <tr><td>34086 Filer - amalgamation colin business flow</td><td>@kialj876</td><td><a href="https://github.com/bcgov/lear/pull/4724">#4724</a></td><td><a href="https://github.com/bcgov/entity/issues/34086">#34086</a></td><td>2026-08-26</td><td><a href="https://github.com/bcgov/lear/commit/cedbc52">cedbc52</a></td></tr>
 </table>
@@ -246,7 +249,7 @@ Repo Versions
   </li>
   <li><strong>legal-api</strong>
     <ul>
-      <li>3.1.19</li>
+      <li>3.1.20</li>
     </ul>
   </li>
   <li><strong>queue_services/business-bn</strong>
@@ -266,7 +269,7 @@ Repo Versions
   </li>
   <li><strong>queue_services/business-filer</strong>
     <ul>
-      <li>3.0.27</li>
+      <li>3.0.28</li>
     </ul>
   </li>
   <li><strong>queue_services/business-pay</strong>
