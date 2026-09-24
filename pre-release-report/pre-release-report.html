@@ -1,5 +1,5 @@
 <h1>Pre-Release Report (PRs to be pushed into TEST)</h1>
-<p>Generated: Thursday, September 24, 2026 at 6:13 AM PDT</p>
+<p>Generated: Thursday, September 24, 2026 at 11:12 AM PDT</p>
 <!-- bcgov/lear -->
 <h2>
 bcgov/lear
@@ -17,6 +17,8 @@ RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSA
 
 <table border="1">
   <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
+  <tr><td>32419 wrap long officer delivery instructions in business summary</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4808">#4808</a></td><td><a href="https://github.com/bcgov/entity/issues/32419">#32419</a></td><td>2026-09-24</td><td><a href="https://github.com/bcgov/lear/commit/a79aff9">a79aff9</a></td></tr>
+  <tr><td>34940 Update certificate of amalgamation in correction</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/lear/pull/4807">#4807</a></td><td><a href="https://github.com/bcgov/entity/issues/34940">#34940</a></td><td>2026-09-24</td><td><a href="https://github.com/bcgov/lear/commit/a7a110a">a7a110a</a></td></tr>
   <tr><td>34940 model update to get corrected amalgamation data from version table</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/lear/pull/4806">#4806</a></td><td><a href="https://github.com/bcgov/entity/issues/34940">#34940</a></td><td>2026-09-23</td><td><a href="https://github.com/bcgov/lear/commit/d73ea1d">d73ea1d</a></td></tr>
 </table>
 </pre>
@@ -54,6 +56,7 @@ RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSA
 
 <table border="1">
   <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
+  <tr><td>35020 - Use new resolution date format for amalgamation filings</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/business-create-ui/pull/891">#891</a></td><td><a href="https://github.com/bcgov/entity/issues/35020">#35020</a></td><td>2026-09-24</td><td><a href="https://github.com/bcgov/business-create-ui/commit/0504a25">0504a25</a></td></tr>
   <tr><td>34905 Amalg - colin primary bad data handling</td><td>@kialj876</td><td><a href="https://github.com/bcgov/business-create-ui/pull/890">#890</a></td><td><a href="https://github.com/bcgov/entity/issues/34905">#34905</a></td><td>2026-09-23</td><td><a href="https://github.com/bcgov/business-create-ui/commit/3b0b3d2">3b0b3d2</a></td></tr>
 </table>
 </pre>
@@ -152,7 +155,7 @@ RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSA
 #150   prod      success  kialj876         5de7fb6   2026-09-18 16:41:26   34839 fix db cast issue (#479 
 #145   test      success  meawong          f99be5a   2026-09-15 20:24:53   34793 - Delete Flow Cleanup ( 
 #141   prod      success  mruff-aeq        22e25b3   2026-09-10 18:08:57   Merge pull request #4773 from 
-#137   test      success  mruff-aeq        90c76fa   2026-09-02 21:36:19   34729 - Add Additional Data f 
+#137   sandbox   success  mruff-aeq        90c76fa   2026-09-02 21:36:19   34729 - Add Additional Data f 
 #136   prod      success  meawong          3bc88f4   2026-08-27 17:24:45   34684 - Update document names 
 
 No commits in IN-DIRS=queue_services/business-emailer
@@ -169,10 +172,15 @@ RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSA
 #239   prod      success  kialj876         5de7fb6   2026-09-18 16:42:02   34839 fix db cast issue (#479 
 #234   test      success  meawong          f99be5a   2026-09-15 20:24:29   34793 - Delete Flow Cleanup ( 
 #230   prod      success  mruff-aeq        22e25b3   2026-09-10 18:09:29   Merge pull request #4773 from 
-#227   test      success  mruff-aeq        90c76fa   2026-09-02 21:26:56   34729 - Add Additional Data f 
+#227   sandbox   success  mruff-aeq        90c76fa   2026-09-02 21:26:56   34729 - Add Additional Data f 
 #222   prod      success  meawong          3bc88f4   2026-08-27 17:24:48   34684 - Update document names 
 
-No commits in IN-DIRS=queue_services/business-filer
+
+these are the commits IN-DIRS=queue_services/business-filer
+<table border="1">
+  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
+  <tr><td>34940 Update certificate of amalgamation in correction</td><td>@vysakh-menon-aot</td><td><a href="https://github.com/bcgov/lear/pull/4807">#4807</a></td><td><a href="https://github.com/bcgov/entity/issues/34940">#34940</a></td><td>2026-09-24</td><td><a href="https://github.com/bcgov/lear/commit/a7a110a">a7a110a</a></td></tr>
+</table>
 </pre>
 <hr>
 <!-- bcgov/lear queue_services/business-pay -->
@@ -209,7 +217,7 @@ Repo Versions
   </li>
   <li><strong>business-create-ui</strong>
     <ul>
-      <li>5.18.28</li>
+      <li>5.18.29</li>
     </ul>
   </li>
   <li><strong>business-dashboard-ui</strong>
@@ -224,7 +232,7 @@ Repo Versions
   </li>
   <li><strong>legal-api</strong>
     <ul>
-      <li>3.1.34</li>
+      <li>3.1.35</li>
     </ul>
   </li>
   <li><strong>queue_services/business-bn</strong>
@@ -244,7 +252,7 @@ Repo Versions
   </li>
   <li><strong>queue_services/business-filer</strong>
     <ul>
-      <li>3.0.36</li>
+      <li>3.0.37</li>
     </ul>
   </li>
   <li><strong>queue_services/business-pay</strong>
