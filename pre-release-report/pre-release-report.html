@@ -1,5 +1,5 @@
 <h1>Pre-Release Report (PRs to be pushed into TEST)</h1>
-<p>Generated: Tuesday, September 29, 2026 at 4:06 AM PDT</p>
+<p>Generated: Tuesday, September 29, 2026 at 10:40 AM PDT</p>
 <!-- bcgov/lear -->
 <h2>
 bcgov/lear
@@ -7,12 +7,12 @@ bcgov/lear
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#818   prod      success  kialj876         0c7397c   2026-09-29 16:20:42   35061 Legal API/Filer - Consu 
+#817   sandbox   success  kialj876         0c7397c   2026-09-29 16:20:03   35061 Legal API/Filer - Consu 
 #816   test      success  kialj876         0c7397c   2026-09-28 18:55:28   35061 Legal API/Filer - Consu 
 #808   test      success  kialj876         3858d17   2026-09-23 21:12:35   35004 chore: bump versions (# 
 #807   prod      success  kialj876         b980ab0   2026-09-23 20:51:12   34987 Legal API - comp party  
 #806   test      success  kialj876         b980ab0   2026-09-23 20:43:52   34987 Legal API - comp party  
-#805   sandbox   success  kialj876         3858d17   2026-09-23 17:02:33   35004 chore: bump versions (# 
-#804   test      success  kialj876         3858d17   2026-09-23 16:15:50   35004 chore: bump versions (# 
 
 </pre>
 <hr>
@@ -23,12 +23,12 @@ bcgov/business-filings-ui
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#1078  prod      success  kialj876         0192069   2026-09-29 16:24:11   34906 Director Change - addre 
 #1077  test      success  kialj876         0192069   2026-09-23 16:28:04   34906 Director Change - addre 
 #1075  prod      success  kialj876         c7736ac   2026-09-18 16:46:51   34890 - Add Warning for CCO C 
 #1074  test      success  meawong          c7736ac   2026-09-15 20:15:53   34890 - Add Warning for CCO C 
 #1071  prod      success  mruff-aeq        43a9404   2026-09-10 18:05:56   34746 completing party c out  
 #1070  test      success  mruff-aeq        43a9404   2026-09-02 21:32:09   34746 completing party c out  
-#1065  prod      success  meawong          5f2787b   2026-08-27 17:24:15   34563 - Fix File Upload for C 
 
 </pre>
 <hr>
@@ -39,12 +39,12 @@ bcgov/business-create-ui
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#1109  prod      success  kialj876         e47d9d9   2026-09-29 16:24:27   35059 - firm party name bug f 
 #1108  test      success  kialj876         e47d9d9   2026-09-28 19:59:28   35059 - firm party name bug f 
 #1105  prod      success  kialj876         b0cf674   2026-09-28 16:15:29   35041 - trigger hotfix branch 
 #1104  test      success  pwei1018         b0cf674   2026-09-25 17:10:44   35041 - trigger hotfix branch 
 #1103  test      failure  kialj876         b0cf674   2026-09-25 16:38:21   35041 - trigger hotfix branch 
 #1101  ?         skipped  kialj876         63d5dcb   2026-09-25 16:25:40   35041 comp party hotfix (#893 
-#1100  ?         skipped  kialj876         63d5dcb   2026-09-25 16:25:17   35041 comp party hotfix (#893 
 
 </pre>
 <hr>
@@ -55,13 +55,19 @@ bcgov/business-edit-ui
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#1000  prod      success  kialj876         e55be08   2026-09-29 16:24:56   Merge pull request #717 from  
 #997   test      success  kialj876         1f6f465   2026-09-23 16:34:53   Merge pull request #715 from  
 #995   prod      success  kialj876         4c48336   2026-09-18 16:46:10   34887 - remove validation for 
 #992   test      success  meawong          8878a63   2026-09-15 20:15:48   28572 - Remove Company Articl 
 #990   prod      success  mruff-aeq        376e48c   2026-09-10 18:07:22   33322 - Display badge for cha 
 #989   test      success  mruff-aeq        376e48c   2026-09-02 21:32:57   33322 - Display badge for cha 
-#987   prod      success  meawong          3f88a4a   2026-08-27 17:24:23   Merge pull request #710 from  
 
+
+<table border="1">
+  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
+  <tr><td>34162 - Show corrected badge only on the office address that changed</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/business-edit-ui/pull/717">#717</a></td><td><a href="https://github.com/bcgov/entity/issues/34162">#34162</a></td><td>2026-09-29</td><td><a href="https://github.com/bcgov/business-edit-ui/commit/e55be08">e55be08</a></td></tr>
+  <tr><td>34662 restore entity type changed by NR flag when resuming alteration draft</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/business-edit-ui/pull/716">#716</a></td><td><a href="https://github.com/bcgov/entity/issues/34662">#34662</a></td><td>2026-09-29</td><td><a href="https://github.com/bcgov/business-edit-ui/commit/d1bdd3f">d1bdd3f</a></td></tr>
+</table>
 </pre>
 <hr>
 <!-- bcgov/business-dashboard-ui -->
@@ -71,12 +77,12 @@ bcgov/business-dashboard-ui
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#525   prod      success  kialj876         c73a744   2026-09-29 16:25:18   34788 - updated business boot 
 #524   test      success  kialj876         c73a744   2026-09-23 16:32:52   34788 - updated business boot 
 #522   prod      success  kialj876         c842e31   2026-09-18 16:45:30   34896 - court order redirect  
 #520   test      success  meawong          9dc4659   2026-09-15 20:15:57   Merge pull request #295 from  
 #519   dev       success  eve-git          9dc4659   2026-09-10 18:28:13   Merge pull request #295 from  
 #518   prod      success  mruff-aeq        9dc4659   2026-09-10 18:08:11   Merge pull request #295 from  
-#513   test      success  mruff-aeq        b88f55d   2026-09-02 21:29:33   Merge pull request #292 from  
 
 </pre>
 <hr>
@@ -104,12 +110,12 @@ bcgov/lear (queue_services/business-bn)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#74    prod      success  kialj876         0c7397c   2026-09-29 16:22:21   35061 Legal API/Filer - Consu 
 #73    test      success  kialj876         3858d17   2026-09-23 16:16:03   35004 chore: bump versions (# 
 #67    prod      success  meawong          725d580   2026-07-23 19:22:15   34265 emailer cco co (#4603)  
 #66    test      success  meawong          4977332   2026-07-20 20:51:26   Merge pull request #4592 from 
 #64    prod      success  mruff-aeq        76a8ad5   2026-06-18 17:41:17   33562 - Add Unfreeze Logic an 
 #63    test      success  mruff-aeq        4396309   2026-06-15 20:17:59   Merge pull request #4494 from 
-#62    prod      success  meawong          a5e8511   2026-06-11 19:00:04   33696 legal api - business su 
 
 No commits in IN-DIRS=queue_services/business-bn
 </pre>
@@ -121,12 +127,12 @@ bcgov/lear (queue_services/business-digital-credentials)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#62    prod      success  kialj876         0c7397c   2026-09-29 16:22:36   35061 Legal API/Filer - Consu 
 #61    test      success  kialj876         0c7397c   2026-09-28 19:28:05   35061 Legal API/Filer - Consu 
 #59    test      success  kialj876         3858d17   2026-09-23 16:16:26   35004 chore: bump versions (# 
 #53    prod      success  meawong          725d580   2026-07-23 19:22:19   34265 emailer cco co (#4603)  
 #52    test      success  meawong          4977332   2026-07-20 20:51:22   Merge pull request #4592 from 
 #50    prod      success  mruff-aeq        76a8ad5   2026-06-18 17:42:43   33562 - Add Unfreeze Logic an 
-#49    test      success  mruff-aeq        4396309   2026-06-15 20:19:24   Merge pull request #4494 from 
 
 No commits in IN-DIRS=queue_services/business-digital-credentials
 </pre>
@@ -138,12 +144,12 @@ bcgov/lear (queue_services/business-emailer)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#153   prod      success  kialj876         0c7397c   2026-09-29 16:21:39   35061 Legal API/Filer - Consu 
 #152   test      success  kialj876         3858d17   2026-09-23 16:16:48   35004 chore: bump versions (# 
 #150   prod      success  kialj876         5de7fb6   2026-09-18 16:41:26   34839 fix db cast issue (#479 
 #145   test      success  meawong          f99be5a   2026-09-15 20:24:53   34793 - Delete Flow Cleanup ( 
 #141   prod      success  mruff-aeq        22e25b3   2026-09-10 18:08:57   Merge pull request #4773 from 
 #137   test      success  mruff-aeq        90c76fa   2026-09-02 21:36:19   34729 - Add Additional Data f 
-#136   prod      success  meawong          3bc88f4   2026-08-27 17:24:45   34684 - Update document names 
 
 No commits in IN-DIRS=queue_services/business-emailer
 </pre>
@@ -155,12 +161,12 @@ bcgov/lear (queue_services/business-filer)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#247   prod      success  kialj876         0c7397c   2026-09-29 16:21:01   35061 Legal API/Filer - Consu 
 #246   test      success  kialj876         0c7397c   2026-09-28 18:56:08   35061 Legal API/Filer - Consu 
 #241   test      success  kialj876         3858d17   2026-09-23 16:17:06   35004 chore: bump versions (# 
 #239   prod      success  kialj876         5de7fb6   2026-09-18 16:42:02   34839 fix db cast issue (#479 
 #234   test      success  meawong          f99be5a   2026-09-15 20:24:29   34793 - Delete Flow Cleanup ( 
 #230   prod      success  mruff-aeq        22e25b3   2026-09-10 18:09:29   Merge pull request #4773 from 
-#227   test      success  mruff-aeq        90c76fa   2026-09-02 21:26:56   34729 - Add Additional Data f 
 
 No commits in IN-DIRS=queue_services/business-filer
 </pre>
@@ -172,12 +178,12 @@ bcgov/lear (queue_services/business-pay)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#65    prod      success  kialj876         0c7397c   2026-09-29 16:22:02   35061 Legal API/Filer - Consu 
 #64    test      success  kialj876         3858d17   2026-09-23 16:17:36   35004 chore: bump versions (# 
 #56    prod      success  loneil           ce06162   2026-05-06 19:51:14   Business Model: update schema 
 #55    test      success  loneil           2a344a8   2026-04-30 21:40:04   Update for 28.9 release (#434 
 #47    sandbox   success  vysakh-menon-aot dd6eb4b   2026-03-09 22:11:01   32567 32565 business filer li 
 #46    sandbox   success  vysakh-menon-aot d844169   2026-03-05 00:00:46   Remove CoD effective date val 
-#45    prod      success  meawong          0791b7c   2026-03-03 20:02:02   32594 - Update Emailer to Ret 
 
 No commits in IN-DIRS=queue_services/business-pay
 </pre>
@@ -189,7 +195,7 @@ Repo Versions
 <ul>
   <li><strong>business-edit-ui</strong>
     <ul>
-      <li>4.17.25</li>
+      <li>4.17.27</li>
     </ul>
   </li>
   <li><strong>business-filings-ui</strong>
