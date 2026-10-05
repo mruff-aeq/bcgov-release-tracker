@@ -7,6 +7,9 @@
 # printed). Removed at the end; the other repos use their own private clones.
 LEAR_CLONE_DIR="$(mktemp -d)"
 lear_watch() { REPO_CLONE_DIR="$LEAR_CLONE_DIR" ./post-release-watch.sh "$@"; }
+# Same for bcgov/business-ui (whole repo + web/business-registry-dashboard).
+BUI_CLONE_DIR="$(mktemp -d)"
+bui_watch() { REPO_CLONE_DIR="$BUI_CLONE_DIR" ./post-release-watch.sh "$@"; }
 
 echo "<h1>Post-Release Report (PRs that have been pushed into TEST this release cycle)</h1>"
 echo "<p>Generated: $(TZ='America/Vancouver' date '+%A, %B %-d, %Y at %-I:%M %p %Z')</p>"
@@ -61,13 +64,24 @@ echo "<pre>"
 echo "</pre>"
 echo "<hr>"
 
-# bcgov/business-ui
+# bcgov/business-ui (whole repo)
 echo "<!-- bcgov/business-ui -->"
 echo "<h2>"
 echo "bcgov/business-ui"
 echo "</h2>"
 echo "<pre>"
-./post-release-watch.sh 6 business-registry-ui-cd.yaml bcgov/business-ui test-release --html
+bui_watch 6 business-registry-ui-cd.yaml bcgov/business-ui test-release --html
+echo "</pre>"
+echo "<hr>"
+
+# bcgov/business-ui (web/business-registry-dashboard) — same CD workflow,
+# filtered with --in-dirs so the table denotes only the PRs that changed it.
+echo "<!-- bcgov/business-ui web/business-registry-dashboard -->"
+echo "<h2>"
+echo "bcgov/business-ui (web/business-registry-dashboard)"
+echo "</h2>"
+echo "<pre>"
+bui_watch 6 business-registry-ui-cd.yaml bcgov/business-ui test-release --in-dirs=web/business-registry-dashboard --html
 echo "</pre>"
 echo "<hr>"
 
@@ -127,7 +141,7 @@ echo "</pre>"
 echo "<hr>"
 
 # Done with lear's tables — drop the shared clone.
-rm -rf "$LEAR_CLONE_DIR"
+rm -rf "$LEAR_CLONE_DIR" "$BUI_CLONE_DIR"
 
 # Repo Versions
 echo "<!-- repo versions -->"
