@@ -1,5 +1,5 @@
 <h1>Post-Release Report (PRs that have been pushed into TEST this release cycle)</h1>
-<p>Generated: Thursday, October 29, 2026 at 12:09 PM PDT</p>
+<p>Generated: Thursday, October 29, 2026 at 4:28 PM PDT</p>
 <!-- bcgov/lear -->
 <h2>
 bcgov/lear
@@ -7,7 +7,7 @@ bcgov/lear
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
-#860   prod      waiting  kialj876         78ae979   2026-10-29 19:07:08   35142 - Tombstone Mapping for 
+#860   prod      failure  kialj876         78ae979   2026-10-29 19:07:08   35142 - Tombstone Mapping for 
 #855   sandbox   success  kialj876         717a043   2026-10-26 19:06:04   35373 - finish pytz 2026.5 ro 
 #854   test      success  kialj876         717a043   2026-10-26 18:07:15   35373 - finish pytz 2026.5 ro 
 #846   prod      success  meawong          572a55e   2026-10-21 18:37:29   35288 Legal-API/Filer/Emailer 
@@ -63,12 +63,12 @@ bcgov/business-create-ui
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#1125  prod      success  kialj876         d03d079   2026-10-29 19:20:29   35375 - Refresh CP and Certif 
 #1122  test      success  kialj876         316b64b   2026-10-26 18:34:55   Merge pull request #903 from  
 #1121  prod      success  meawong          316b64b   2026-10-19 19:08:07   Merge pull request #903 from  
 #1118  test      success  meawong          43cdc4f   2026-10-13 21:29:32   Merge pull request #901 from  
 #1116  prod      success  mruff-aeq        c9b789f   2026-10-08 17:48:18   35045 document delivery fix ( 
 #1112  test      success  mruff-aeq        af50ed8   2026-10-05 18:57:03   34772 amalg unaffiliated fix  
-#1109  prod      success  kialj876         e47d9d9   2026-09-29 16:24:27   35059 - firm party name bug f 
 
 showing PRs between 43cdc4f and 316b64b
 
@@ -110,12 +110,12 @@ bcgov/business-dashboard-ui
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#541   prod      success  kialj876         bb642d6   2026-10-29 19:31:16   Update frontend-cd workflow r 
+#539   ?         startup_failure kialj876         008ba69   2026-10-29 19:23:26   31456 - redirect to the busin 
 #538   ?         startup_failure kialj876         008ba69   2026-10-29 19:05:25   31456 - redirect to the busin 
 #536   test      success  kialj876         aab38df   2026-10-26 18:22:51   35328, 34959 - COD+AGM Loc Ch 
 #530   prod      success  meawong          8612b97   2026-10-19 19:08:15   34971 - Suppress not in good  
 #528   test      success  meawong          c196847   2026-10-13 21:29:41   Merge pull request #299 from  
-#527   dev       success  eve-git          c196847   2026-10-07 20:37:16   Merge pull request #299 from  
-#525   prod      success  kialj876         c73a744   2026-09-29 16:25:18   34788 - updated business boot 
 
 showing PRs between c196847 and aab38df
 
@@ -137,7 +137,7 @@ bcgov/business-ui (web/business-registry-dashboard)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
-#307   prod      waiting  kialj876         7186b03   2026-10-29 19:06:26   chore: update versions (#580) 
+#307   prod      success  kialj876         7186b03   2026-10-29 19:06:26   chore: update versions (#580) 
 #306   test      success  kialj876         80e3d9f   2026-10-26 18:23:44   35280 - configure correctable 
 #304   prod      success  meawong          17b25f3   2026-10-19 19:08:23   35264 - dep update (#577)     
 #303   test      success  meawong          eb5935e   2026-10-13 21:29:44   Merge pull request #570 from  
@@ -160,21 +160,13 @@ bcgov/lear (queue_services/business-bn)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#79    prod      success  kialj876         78ae979   2026-10-29 19:15:49   35142 - Tombstone Mapping for 
 #78    test      success  kialj876         717a043   2026-10-26 18:13:01   35373 - finish pytz 2026.5 ro 
 #75    test      cancelled mruff-aeq        94c40f3   2026-10-05 18:54:48   34869 update legal api to fix 
 #74    prod      success  kialj876         0c7397c   2026-09-29 16:22:21   35061 Legal API/Filer - Consu 
 #73    test      success  kialj876         3858d17   2026-09-23 16:16:03   35004 chore: bump versions (# 
 #67    prod      success  meawong          725d580   2026-07-23 19:22:15   34265 emailer cco co (#4603)  
-#66    test      success  meawong          4977332   2026-07-20 20:51:26   Merge pull request #4592 from 
 
-showing PRs between 94c40f3 and 717a043
-
-these are the commits IN-DIRS=queue_services/business-bn
-<table border="1">
-  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>
-  <tr><td>35373 - finish pytz 2026.5 rollout (bn-retry, entity-bn, filer) and refresh common refs</td><td>@mruff-aeq</td><td><a href="https://github.com/bcgov/lear/pull/4901">#4901</a></td><td><a href="https://github.com/bcgov/entity/issues/35373">#35373</a></td><td>2026-10-26</td><td><a href="https://github.com/bcgov/lear/commit/717a043">717a043</a></td></tr>
-  <tr><td>time zone fix</td><td>@benjamin-bc-gov</td><td><a href="https://github.com/bcgov/lear/pull/4885">#4885</a></td><td>NA</td><td>2026-10-23</td><td><a href="https://github.com/bcgov/lear/commit/88124ee">88124ee</a></td></tr>
-</table>
 </pre>
 <hr>
 <!-- bcgov/lear queue_services/business-digital-credentials -->
@@ -184,12 +176,12 @@ bcgov/lear (queue_services/business-digital-credentials)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#66    prod      success  kialj876         78ae979   2026-10-29 19:16:18   35142 - Tombstone Mapping for 
 #65    test      success  kialj876         717a043   2026-10-26 18:12:52   35373 - finish pytz 2026.5 ro 
 #62    prod      success  kialj876         0c7397c   2026-09-29 16:22:36   35061 Legal API/Filer - Consu 
 #61    test      success  kialj876         0c7397c   2026-09-28 19:28:05   35061 Legal API/Filer - Consu 
 #59    test      success  kialj876         3858d17   2026-09-23 16:16:26   35004 chore: bump versions (# 
 #53    prod      success  meawong          725d580   2026-07-23 19:22:19   34265 emailer cco co (#4603)  
-#52    test      success  meawong          4977332   2026-07-20 20:51:22   Merge pull request #4592 from 
 
 </pre>
 <hr>
@@ -200,12 +192,12 @@ bcgov/lear (queue_services/business-emailer)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#165   prod      success  kialj876         78ae979   2026-10-29 19:14:55   35142 - Tombstone Mapping for 
 #164   test      success  kialj876         717a043   2026-10-26 18:07:38   35373 - finish pytz 2026.5 ro 
 #161   prod      success  meawong          572a55e   2026-10-21 18:37:33   35288 Legal-API/Filer/Emailer 
 #160   test      success  meawong          572a55e   2026-10-20 21:38:33   35288 Legal-API/Filer/Emailer 
 #158   prod      success  meawong          a78e258   2026-10-19 19:08:34   35259 Notebook - pull over co 
 #156   test      success  meawong          5107904   2026-10-13 21:30:05   35188 chore bump versions (#4 
-#153   prod      success  kialj876         0c7397c   2026-09-29 16:21:39   35061 Legal API/Filer - Consu 
 
 showing PRs between 572a55e and 717a043
 
@@ -224,12 +216,12 @@ bcgov/lear (queue_services/business-filer)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#264   prod      success  kialj876         78ae979   2026-10-29 19:13:56   35142 - Tombstone Mapping for 
 #261   test      success  kialj876         717a043   2026-10-26 18:09:35   35373 - finish pytz 2026.5 ro 
 #258   prod      success  meawong          572a55e   2026-10-21 18:37:40   35288 Legal-API/Filer/Emailer 
 #257   test      success  meawong          572a55e   2026-10-20 21:38:39   35288 Legal-API/Filer/Emailer 
 #254   prod      success  meawong          a78e258   2026-10-19 19:08:39   35259 Notebook - pull over co 
 #252   test      success  meawong          5107904   2026-10-13 21:30:09   35188 chore bump versions (#4 
-#251   prod      success  mruff-aeq        fa3dbc1   2026-10-08 17:47:10   Merge pull request #4853 from 
 
 showing PRs between 572a55e and 717a043
 
@@ -248,12 +240,12 @@ bcgov/lear (queue_services/business-pay)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#69    prod      success  kialj876         78ae979   2026-10-29 19:15:20   35142 - Tombstone Mapping for 
 #68    test      success  kialj876         717a043   2026-10-26 18:10:35   35373 - finish pytz 2026.5 ro 
 #65    prod      success  kialj876         0c7397c   2026-09-29 16:22:02   35061 Legal API/Filer - Consu 
 #64    test      success  kialj876         3858d17   2026-09-23 16:17:36   35004 chore: bump versions (# 
 #56    prod      success  loneil           ce06162   2026-05-06 19:51:14   Business Model: update schema 
 #55    test      success  loneil           2a344a8   2026-04-30 21:40:04   Update for 28.9 release (#434 
-#47    sandbox   success  vysakh-menon-aot dd6eb4b   2026-03-09 22:11:01   32567 32565 business filer li 
 
 </pre>
 <hr>
@@ -289,7 +281,7 @@ Repo Versions
   </li>
   <li><strong>legal-api</strong>
     <ul>
-      <li>3.1.53</li>
+      <li>3.1.54</li>
     </ul>
   </li>
   <li><strong>queue_services/business-bn</strong>
@@ -309,7 +301,7 @@ Repo Versions
   </li>
   <li><strong>queue_services/business-filer</strong>
     <ul>
-      <li>3.0.43</li>
+      <li>3.0.44</li>
     </ul>
   </li>
   <li><strong>queue_services/business-pay</strong>
