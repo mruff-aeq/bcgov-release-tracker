@@ -256,3 +256,16 @@ echo "    </ul>"
 echo "  </li>"
 echo "</ul>"
 echo "<hr>"
+
+# Miscellaneous business-ui — every PR across the whole monorepo (no --in-dirs),
+# for spotting changes outside the normal release protocol. Bounded by the
+# registry dashboard's CD workflow. Deliberately not a Repo Versions / Repo CD
+# entry, and its heading doesn't match bulletKeysFor in index.html.
+echo "<!-- bcgov/business-ui miscellaneous -->"
+echo "<h2>"
+echo "Miscellaneous business-ui"
+echo "</h2>"
+echo "<pre>"
+./post-release-watch.sh 6 business-registry-ui-cd.yaml bcgov/business-ui test-release --html
+echo "</pre>"
+echo "<hr>"
