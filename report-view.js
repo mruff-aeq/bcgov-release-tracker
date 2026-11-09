@@ -1,15 +1,16 @@
 // Turns a generated report (headings, run logs, lists, and the inline data each
 // <pre> carries; see emit_view_data in report-data.sh) into the styled page.
-//   Optimistic (default): the list the report has always shown.
-//   Dynamic: a custom range, bounded by the `test` runs in the section's run log.
+//   Dynamic (default): a custom range, bounded by the `test` runs in the section's
+//     run log. Starts on the same range as optimistic wherever the log allows.
 //     Post-release picks both ends; pre-release picks a start, ending at main.
+//   Optimistic: the list the report has always shown.
 // Report text only ever goes in via textContent: PR titles are untrusted.
 (function () {
   const REPORT = document.body.dataset.report;
   const REPORT_LINKS = { pre: "../pre-release-report/pre-release-report.html", post: "../post-release-report/post-release-report.html" };
   const HEAD_CACHE_MS = 5 * 60 * 1000;
   const MISC_TITLE = "Miscellaneous business-ui";
-  let dynamic = false;
+  let dynamic = true;
 
   function el(tag, className, text) {
     const node = document.createElement(tag);
