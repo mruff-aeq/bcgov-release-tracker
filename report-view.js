@@ -100,8 +100,9 @@
     return REPORT === "pre" ? currentRows(v).length === 0 : !inCurrentCycle(v);
   }
 
+  // Always describes the default list, whichever mode is showing.
   function statusLabel(v) {
-    const count = currentRows(v).length;
+    const count = v.d ? v.d.optimistic.length : 0;
     if (REPORT === "pre") return count ? count + " pending" : "";
     return inCurrentCycle(v) ? "latest test push · " + v.latest : "";
   }
@@ -407,8 +408,9 @@
 
     const labels = new Map();
     for (const v of mainViews) {
-      if (dynamic || isQuiet(v)) continue;
-      for (const key of bulletKeys(v)) labels.set(key, statusLabel(v));
+      const label = statusLabel(v);
+      if (!label) continue;
+      for (const key of bulletKeys(v)) labels.set(key, label);
     }
     for (const t of tiles) t.pill.textContent = labels.get(t.name) || "";
   }
