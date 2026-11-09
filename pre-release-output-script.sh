@@ -8,6 +8,9 @@
 LEAR_CLONE_DIR="$(mktemp -d)"
 lear_watch() { REPO_CLONE_DIR="$LEAR_CLONE_DIR" ./pre-release-watch.sh "$@"; }
 
+echo '<!DOCTYPE html>'
+echo '<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pre-release | BC Gov Release Reports</title><link rel="stylesheet" href="../report.css"></head>'
+echo '<body data-report="pre">'
 echo "<h1>Pre-Release Report (PRs to be pushed into TEST)</h1>"
 echo "<p>Generated: $(TZ='America/Vancouver' date '+%A, %B %-d, %Y at %-I:%M %p %Z')</p>"
 
@@ -256,7 +259,6 @@ echo "    </ul>"
 echo "  </li>"
 echo "</ul>"
 echo "<hr>"
-
 # Miscellaneous business-ui — every PR across the whole monorepo (no --in-dirs),
 # for spotting changes outside the normal release protocol. Bounded by the
 # registry dashboard's CD workflow. Deliberately not a Repo Versions / Repo CD
@@ -269,3 +271,6 @@ echo "<pre>"
 ./pre-release-watch.sh 6 business-registry-ui-cd.yaml bcgov/business-ui test-release --html
 echo "</pre>"
 echo "<hr>"
+
+echo '<script src="../report-view.js"></script>'
+echo '</body></html>'

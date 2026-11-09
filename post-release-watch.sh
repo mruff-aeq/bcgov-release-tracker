@@ -41,7 +41,7 @@
 # web/business-registry-dashboard
 #
 # --html (requires `test-release`) suppresses the TEXT rendering of that second
-# (merged-PR) table and prints only its HTML version. The first table — the last
+# (merged-PR) table and emits it as inline JSON for report-view.js. The first table — the last
 # CD runs — is always printed as text.
 #
 # Examples:
@@ -237,11 +237,6 @@ get_env() {  # get_env <full-sha> <created_at> [deep]
   printf '%s' "$env"
 }
 
-# Minimal HTML escaping for table cell text (&, <, > only — no CSS, no quotes-in-attrs).
-html_escape() {
-  printf '%s' "$1" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
-}
-
 # --- local clone of the repo (the PR list comes from git, not the API) --------
 # The merged-PR list is read from a local clone: every first-parent commit on the
 # default branch is one merged PR (squash or merge commit), so `git log` over a
@@ -362,58 +357,8 @@ email_login() {  # email_login <email> <sha>
   printf '%s' "$login"
 }
 
-# Print the PR table (text unless --html, then HTML) for the first-parent commits
-# in git range $1 (e.g. "STOP..origin/HEAD"), newest first, honouring --in-dirs.
-# Sets SHOWN to the number of rows.
-list_prs() {  # list_prs <git-range>
-  local range="$1" pathspec=() csha cdate cname cemail csubj cbody
-  local pr_cell ticket_cell commit_cell r hnum hticket hsha hdate hauthor htitle
-  [ "$IN_DIRS" -eq 1 ] && pathspec=(-- "${IN_DIRS_ARR[@]}")
-  SHOWN=0
-  local pr_rows=()
-  # NUL-terminated records, unit-separator (\x1f) between fields: the body may
-  # contain anything (tabs, newlines) so tsv isn't safe.
-  while IFS=$'\x1f' read -r -d '' csha cdate cname cemail csubj cbody; do
-    [ -z "$csha" ] && continue
-    parse_commit "$csubj" "$cbody" "$cname" "$cemail" "$csha"
-    [ "$HTML" -ne 1 ] && printf '%-42.41s %-20.20s %-7s %-9s %-12s %-9s\n' "$PR_TITLE" "$PR_AUTHOR" "$PR_NUM" "$PR_TICKET" "$cdate" "$csha"
-    pr_rows+=("$PR_NUM"$'\t'"$PR_TICKET"$'\t'"$csha"$'\t'"$cdate"$'\t'"$PR_AUTHOR"$'\t'"$PR_TITLE")
-    SHOWN=$((SHOWN + 1))
-  done < <(git -C "$CLONE_DIR" log --first-parent -z --abbrev=7 \
-             --format='%h%x1f%cs%x1f%an%x1f%ae%x1f%s%x1f%b' "$range" ${pathspec[@]+"${pathspec[@]}"} 2>/dev/null)
-
-  # Raw HTML version of the table (no CSS), printed after the text table.
-  if [ "$SHOWN" -gt 0 ]; then
-    echo
-    # With --in-dirs the rows are already filtered to commits that touched the
-    # dirs, so the table looks like the others — just label it with the filter.
-    [ "$IN_DIRS" -eq 1 ] && echo "these are the commits IN-DIRS=$IN_DIRS_ARG"
-    echo "<table border=\"1\">"
-    echo "  <tr><th>Title</th><th>Author</th><th>PR</th><th>Ticket</th><th>Merged_Date</th><th>Commit</th></tr>"
-    for r in "${pr_rows[@]}"; do
-      IFS=$'\t' read -r hnum hticket hsha hdate hauthor htitle <<< "$r"
-      # Ticket cell -> link to the bcgov/entity issue, unless it's NA.
-      if [ "$hticket" = "NA" ]; then
-        ticket_cell="NA"
-      else
-        ticket_cell="<a href=\"https://github.com/bcgov/entity/issues/${hticket#\#}\">$(html_escape "$hticket")</a>"
-      fi
-      # PR cell -> link to the PR on $REPO, e.g. https://github.com/bcgov/lear/pull/123
-      # ($hnum is like "#123"); "-" for a commit that isn't a PR merge.
-      if [ "$hnum" = "-" ]; then
-        pr_cell="-"
-      else
-        pr_cell="<a href=\"https://github.com/$REPO/pull/${hnum#\#}\">$(html_escape "$hnum")</a>"
-      fi
-      # Commit cell -> link to the commit on $REPO.
-      commit_cell="<a href=\"https://github.com/$REPO/commit/$hsha\">$(html_escape "$hsha")</a>"
-      printf '  <tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n' \
-        "$(html_escape "$htitle")" "$(html_escape "$hauthor")" "$pr_cell" \
-        "$ticket_cell" "$(html_escape "$hdate")" "$commit_cell"
-    done
-    echo "</table>"
-  fi
-}
+# list_prs and emit_view_data, shared with the other *-release-watch.sh.
+. "$(dirname "$0")/report-data.sh"
 
 printf '%-6s %-9s %-8s %-16s %-9s %-21s %-30s\n' "RUN" "ENV" "RESULT" "ACTOR" "COMMIT" "CREATED (UTC)" "MESSAGE"
 printf '%-6s %-9s %-8s %-16s %-9s %-21s %-30s\n' "------" "-------" "------" "----------------" "-------" "---------------------" "------------------------------"
@@ -431,6 +376,7 @@ RUNS_JSON=$(api_union "/repos/$REPO/actions/workflows/$WORKFLOW/runs?event=workf
 }
 
 rows=()
+TEST_ROWS=()  # the run log's `test` rows: the bounds offered by dynamic mode
 while IFS= read -r line; do
   rows+=("$line")
 done < <(printf '%s' "$RUNS_JSON" | jq -r --argjson n "$COUNT" '
@@ -445,6 +391,7 @@ done < <(printf '%s' "$RUNS_JSON" | jq -r --argjson n "$COUNT" '
 for line in "${rows[@]}"; do
   IFS=$'\t' read -r num sha concl created actor msg <<< "$line"
   env=$(get_env "$sha" "$created" 1)
+  [ "$env" = "test" ] && TEST_ROWS+=("$num"$'\t'"$sha"$'\t'"${created:0:10}"$'\t'"$concl")
   sha7="${sha:0:7}"
   created="${created%Z}"; created="${created/T/ }"
   msg=$(printf '%s' "$msg" | cut -c1-29)
@@ -483,15 +430,17 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
 
   if [ -z "$START_SHA" ]; then
     echo "test-release: no 'test' deploy found in the recent runs of $WORKFLOW — nothing to report." >&2
+    [ "$HTML" -eq 1 ] && ensure_clone && emit_view_data post "" "" ""
     exit 0
   fi
   if [ -z "$STOP_SHA" ]; then
     echo "test-release: only ONE 'test' deploy found in the recent runs of $WORKFLOW — cannot bound the" >&2
     echo "              release window (need a previous test deploy)." >&2
+    [ "$HTML" -eq 1 ] && ensure_clone && emit_view_data post "" "" ""
     exit 0
   fi
 
-  echo "showing PRs between $STOP_SHA and $START_SHA"
+  [ "$HTML" -ne 1 ] && echo "showing PRs between $STOP_SHA and $START_SHA"
 
   # --html suppresses this text table (header + rows); only the HTML prints.
   if [ "$HTML" -ne 1 ]; then
@@ -525,15 +474,16 @@ if [ "$TEST_RELEASE" -eq 1 ]; then
     [ "$HTML" -eq 1 ] && echo "warning: test commits $STOP_SHA and $START_SHA are not on one line of history — list may be inexact"
   fi
 
-  list_prs "$STOP_SHA..$START_SHA"
-
-  if [ "$SHOWN" -eq 0 ]; then
-    # With --in-dirs every in-scope PR may have been filtered out; say so
-    # explicitly (printed in HTML too, since there's no table to show).
-    if [ "$IN_DIRS" -eq 1 ]; then
-      echo "No commits in IN-DIRS=$IN_DIRS_ARG"
-    else
-      [ "$HTML" -ne 1 ] && echo "(none — the latest test deploy contained no new merged PRs)"
+  if [ "$HTML" -eq 1 ]; then
+    emit_view_data post "$STOP_SHA..$START_SHA" "$STOP_SHA" "$START_SHA"
+  else
+    list_prs "$STOP_SHA..$START_SHA" /dev/null
+    if [ "$SHOWN" -eq 0 ]; then
+      if [ "$IN_DIRS" -eq 1 ]; then
+        echo "No commits in IN-DIRS=$IN_DIRS_ARG"
+      else
+        echo "(none — the latest test deploy contained no new merged PRs)"
+      fi
     fi
   fi
 fi
