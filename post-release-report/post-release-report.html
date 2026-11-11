@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Post-release | BC Gov Release Reports</title><link rel="stylesheet" href="../report.css"></head>
 <body data-report="post">
 <h1>Post-Release Report (PRs that have been pushed into TEST this release cycle)</h1>
-<p>Generated: Wednesday, November 11, 2026 at 12:58 AM MST</p>
+<p>Generated: Wednesday, November 11, 2026 at 9:26 AM MST</p>
 <!-- bcgov/lear -->
 <h2>
 bcgov/lear
@@ -10,12 +10,12 @@ bcgov/lear
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#888   sandbox   success  mruff-aeq        4b9024b   2026-11-11 10:31:22   Merge pull request #4953 from 
 #885   test      success  mruff-aeq        4302143   2026-11-10 12:50:17   Merge pull request #4948 from 
 #884   dev       success  mruff-aeq        4302143   2026-11-10 12:18:32   Merge pull request #4948 from 
 #883   test      success  mruff-aeq        0a8a423   2026-11-09 19:15:16   35429 - update current liquid 
 #878   prod      success  benjamin-bc-gov  ad4513c   2026-11-05 20:15:08   34587 - Review Imported Data: 
 #867   sandbox   success  benjamin-bc-gov  2d0830a   2026-11-02 21:12:24   Added Auth Config (#4927)     
-#866   sandbox   cancelled benjamin-bc-gov  2d0830a   2026-11-02 21:11:54   Added Auth Config (#4927)     
 
 <script>document.currentScript.parentElement.prData = {"kind":"post","repo":"bcgov/lear","head":"4b9024b2c55385bac1bdd5e9f6142d57f71f7e13","branch":"main","from":"0a8a423","to":"4302143","optimistic":[{"pr":"#4948","ticket":"#35453","commit":"4302143","date":"2026-11-09","author":"@benjamin-bc-gov","title":"35453 - review round 1: sync the sandbox Postman collection with the published copy"}],"points":[{"run":885,"sha":"4302143","date":"2026-11-10","result":"success","newer":3,"onMain":true},{"run":883,"sha":"0a8a423","date":"2026-11-09","result":"success","newer":4,"onMain":true}],"dynamic":[{"pr":"#4953","ticket":"#35518","commit":"4b9024b","date":"2026-11-10","author":"@deetz99","title":"35518 - fix validation to exclude bypass"},{"pr":"#4951","ticket":"#35512","commit":"9772d19","date":"2026-11-10","author":"@deetz99","title":"35512 appt cess dates"},{"pr":"#4950","ticket":"#35169","commit":"768b173","date":"2026-11-10","author":"@Rajandeep98","title":"35169 - Added Restoration Data"},{"pr":"#4948","ticket":"#35453","commit":"4302143","date":"2026-11-09","author":"@benjamin-bc-gov","title":"35453 - review round 1: sync the sandbox Postman collection with the published copy"}]};</script>
 </pre>
@@ -146,12 +146,12 @@ bcgov/lear (queue_services/business-emailer)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#169   sandbox   success  mruff-aeq        4b9024b   2026-11-11 10:38:17   Merge pull request #4953 from 
 #168   test      success  mruff-aeq        0a8a423   2026-11-09 19:15:20   35429 - update current liquid 
 #165   prod      success  kialj876         78ae979   2026-10-29 19:14:55   35142 - Tombstone Mapping for 
 #164   test      success  kialj876         717a043   2026-10-26 18:07:38   35373 - finish pytz 2026.5 ro 
 #161   prod      success  meawong          572a55e   2026-10-21 18:37:33   35288 Legal-API/Filer/Emailer 
 #160   test      success  meawong          572a55e   2026-10-20 21:38:33   35288 Legal-API/Filer/Emailer 
-#158   prod      success  meawong          a78e258   2026-10-19 19:08:34   35259 Notebook - pull over co 
 
 <script>document.currentScript.parentElement.prData = {"kind":"post","repo":"bcgov/lear","head":"4b9024b2c55385bac1bdd5e9f6142d57f71f7e13","branch":"main","from":"717a043","to":"0a8a423","optimistic":[{"pr":"#4935","ticket":"#35411","commit":"ce81e84","date":"2026-11-04","author":"@mruff-aeq","title":"35411 - Amalgamation: remove completing party for corps"},{"pr":"#4929","ticket":"#35349","commit":"7834ea2","date":"2026-11-04","author":"@kialj876","title":"35349 Legal API, filer, emailer - continuaton in support relationship…"}],"points":[{"run":168,"sha":"0a8a423","date":"2026-11-09","result":"success","newer":0,"onMain":true},{"run":164,"sha":"717a043","date":"2026-10-26","result":"success","newer":2,"onMain":true},{"run":160,"sha":"572a55e","date":"2026-10-20","result":"success","newer":4,"onMain":true}],"dynamic":[{"pr":"#4935","ticket":"#35411","commit":"ce81e84","date":"2026-11-04","author":"@mruff-aeq","title":"35411 - Amalgamation: remove completing party for corps"},{"pr":"#4929","ticket":"#35349","commit":"7834ea2","date":"2026-11-04","author":"@kialj876","title":"35349 Legal API, filer, emailer - continuaton in support relationship…"},{"pr":"#4901","ticket":"#35373","commit":"717a043","date":"2026-10-26","author":"@mruff-aeq","title":"35373 - finish pytz 2026.5 rollout (bn-retry, entity-bn, filer) and refresh common refs"},{"pr":"#4885","ticket":"NA","commit":"88124ee","date":"2026-10-23","author":"@benjamin-bc-gov","title":"time zone fix"}]};</script>
 </pre>
@@ -163,14 +163,14 @@ bcgov/lear (queue_services/business-filer)
 <pre>
 RUN    ENV       RESULT   ACTOR            COMMIT    CREATED (UTC)         MESSAGE                       
 ------ -------   ------   ---------------- -------   --------------------- ------------------------------
+#280   sandbox   success  mruff-aeq        4b9024b   2026-11-11 10:38:42   Merge pull request #4953 from 
 #278   test      success  mruff-aeq        4302143   2026-11-10 12:50:20   Merge pull request #4948 from 
 #277   dev       success  mruff-aeq        4302143   2026-11-10 12:18:35   Merge pull request #4948 from 
 #276   test      success  mruff-aeq        0a8a423   2026-11-09 19:15:24   35429 - update current liquid 
 #273   prod      success  benjamin-bc-gov  b8928d8   2026-11-05 21:24:39   35395 legal api - draft handl 
 #268   sandbox   success  benjamin-bc-gov  2d0830a   2026-11-02 21:13:11   Added Auth Config (#4927)     
-#267   test      success  benjamin-bc-gov  2d0830a   2026-11-02 20:58:13   Added Auth Config (#4927)     
 
-<script>document.currentScript.parentElement.prData = {"kind":"post","repo":"bcgov/lear","head":"4b9024b2c55385bac1bdd5e9f6142d57f71f7e13","branch":"main","from":"0a8a423","to":"4302143","optimistic":[],"points":[{"run":278,"sha":"4302143","date":"2026-11-10","result":"success","newer":1,"onMain":true},{"run":276,"sha":"0a8a423","date":"2026-11-09","result":"success","newer":1,"onMain":true},{"run":267,"sha":"2d0830a","date":"2026-11-02","result":"success","newer":7,"onMain":true}],"dynamic":[{"pr":"#4951","ticket":"#35512","commit":"9772d19","date":"2026-11-10","author":"@deetz99","title":"35512 appt cess dates"},{"pr":"#4938","ticket":"#35429","commit":"0a8a423","date":"2026-11-09","author":"@deetz99","title":"35429 - update current liquidation outputs and add liquidation report output"},{"pr":"#4941","ticket":"#35395","commit":"7af0803","date":"2026-11-09","author":"@kialj876","title":"35395 legal api - stale draft report: add absorbed changes, business …"},{"pr":"#4931","ticket":"#35427","commit":"d2651aa","date":"2026-11-04","author":"@deetz99","title":"35427 liquidator appt method"},{"pr":"#4934","ticket":"#35422","commit":"29dfd88","date":"2026-11-04","author":"@deetz99","title":"35422 liquidation date"},{"pr":"#4933","ticket":"#35398","commit":"dffbac2","date":"2026-11-04","author":"@deetz99","title":"35398 remove new legal type correction"},{"pr":"#4929","ticket":"#35349","commit":"7834ea2","date":"2026-11-04","author":"@kialj876","title":"35349 Legal API, filer, emailer - continuaton in support relationship…"}]};</script>
+<script>document.currentScript.parentElement.prData = {"kind":"post","repo":"bcgov/lear","head":"4b9024b2c55385bac1bdd5e9f6142d57f71f7e13","branch":"main","from":"0a8a423","to":"4302143","optimistic":[],"points":[{"run":278,"sha":"4302143","date":"2026-11-10","result":"success","newer":1,"onMain":true},{"run":276,"sha":"0a8a423","date":"2026-11-09","result":"success","newer":1,"onMain":true}],"dynamic":[{"pr":"#4951","ticket":"#35512","commit":"9772d19","date":"2026-11-10","author":"@deetz99","title":"35512 appt cess dates"}]};</script>
 </pre>
 <hr>
 <!-- bcgov/lear queue_services/business-pay -->
